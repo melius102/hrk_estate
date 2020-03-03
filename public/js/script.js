@@ -2,31 +2,31 @@ const log = console.log;
 
 // Gu: District
 const districtCode = {
-    "1132000000": { en: "Dobong District", ko: "도봉구" },
-    "1123000000": { en: "Dongdaemun District", ko: "동대문구" },
-    "1159000000": { en: "Dongjak District", ko: "동작구" },
-    "1138000000": { en: "Eunpyeong District", ko: "은평구" },
-    "1130500000": { en: "Gangbuk District", ko: "강북구" },
-    "1174000000": { en: "Gangdong District", ko: "강동구" },
-    "1168000000": { en: "Gangnam District", ko: "강남구" },
-    "1150000000": { en: "Gangseo District", ko: "강서구" },
-    "1154500000": { en: "Geumcheon District", ko: "금천구" },
-    "1153000000": { en: "Guro District", ko: "구로구" },
-    "1162000000": { en: "Gwanak District", ko: "관악구" },
-    "1121500000": { en: "Gwangjin District", ko: "광진구" },
-    "1111000000": { en: "Jongno District", ko: "종로구" },
-    "1114000000": { en: "Jung District", ko: "중구" },
-    "1126000000": { en: "Jungnang District", ko: "중랑구" },
-    "1144000000": { en: "Mapo District", ko: "마포구" },
-    "1135000000": { en: "Nowon District", ko: "노원구" },
-    "1165000000": { en: "Seocho District", ko: "서초구" },
-    "1141000000": { en: "Seodaemun District", ko: "서대문구" },
-    "1129000000": { en: "Seongbuk District", ko: "성북구" },
-    "1120000000": { en: "Seongdong District", ko: "성동구" },
-    "1171000000": { en: "Songpa District", ko: "송파구" },
-    "1147000000": { en: "Yangcheon District", ko: "양천구" },
-    "1156000000": { en: "Yeongdeungpo District", ko: "영등포구" },
-    "1117000000": { en: "Yongsan District", ko: "용산구" }
+    "11110": { en: "Jongno District", ko: "종로구" },
+    "11140": { en: "Jung District", ko: "중구" },
+    "11170": { en: "Yongsan District", ko: "용산구" },
+    "11200": { en: "Seongdong District", ko: "성동구" },
+    "11215": { en: "Gwangjin District", ko: "광진구" },
+    "11230": { en: "Dongdaemun District", ko: "동대문구" },
+    "11260": { en: "Jungnang District", ko: "중랑구" },
+    "11290": { en: "Seongbuk District", ko: "성북구" },
+    "11305": { en: "Gangbuk District", ko: "강북구" },
+    "11320": { en: "Dobong District", ko: "도봉구" },
+    "11350": { en: "Nowon District", ko: "노원구" },
+    "11380": { en: "Eunpyeong District", ko: "은평구" },
+    "11410": { en: "Seodaemun District", ko: "서대문구" },
+    "11440": { en: "Mapo District", ko: "마포구" },
+    "11470": { en: "Yangcheon District", ko: "양천구" },
+    "11500": { en: "Gangseo District", ko: "강서구" },
+    "11530": { en: "Guro District", ko: "구로구" },
+    "11545": { en: "Geumcheon District", ko: "금천구" },
+    "11560": { en: "Yeongdeungpo District", ko: "영등포구" },
+    "11590": { en: "Dongjak District", ko: "동작구" },
+    "11620": { en: "Gwanak District", ko: "관악구" },
+    "11650": { en: "Seocho District", ko: "서초구" },
+    "11680": { en: "Gangnam District", ko: "강남구" },
+    "11710": { en: "Songpa District", ko: "송파구" },
+    "11740": { en: "Gangdong District", ko: "강동구" },
 }
 
 window.onload = () => {
@@ -43,17 +43,28 @@ class Page1 extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            jsonData: null
+            jsonData: null,
+            LAWD_CD: null,
         };
-        this.hClick = this.hClick.bind(this);
+        this.hSelected = this.hSelected.bind(this);
+        this.hClickLoad = this.hClickLoad.bind(this);
+        this.hClickClear = this.hClickClear.bind(this);
+    }
+
+    hSelected(evt) {
+        log('hSelected');
+        if (evt.target.value) {
+            this.setState({ LAWD_CD: evt.target.value });
+        }
     }
 
     // componentDidMount() { }
     // www.code.go.kr
-    hClick(evt) {
-        let LAWD_CD = "11410";
+    hClickLoad(evt) {
+        log('hClickLoad');
+        if (!this.state.LAWD_CD) return;
+        let LAWD_CD = this.state.LAWD_CD;
         let DEAL_YMD = `202002`;
-        log('hClick');
         fetch(`/data/${LAWD_CD}/${DEAL_YMD}`)
             .then((response) => {
                 // log(response); // header
@@ -64,6 +75,11 @@ class Page1 extends React.Component {
                 // log(jsonData);
                 this.setState({ jsonData });
             });
+    }
+
+    hClickClear(evt) {
+        log('hClickClear');
+        this.setState({ jsonData: null });
     }
 
     render() {
@@ -78,9 +94,25 @@ class Page1 extends React.Component {
 
         return (
             <React.Fragment>
-                <button onClick={this.hClick}>Click</button>
+                <SelectDistrict onSelected={this.hSelected} />
+                <button onClick={this.hClickLoad}>Load</button>
+                <button onClick={this.hClickClear}>Clear</button>
                 {items}
             </React.Fragment>
+        );
+    }
+}
+
+class SelectDistrict extends React.Component {
+    render() {
+        let districtCodeKey = Object.keys(districtCode);
+        let optionTags = [];
+        optionTags.push(<option key={0} value={""}>선택</option>);
+        districtCodeKey.forEach((v, i) => {
+            optionTags.push(<option key={i + 1} value={v}>{districtCode[v].ko}</option>);
+        });
+        return (
+            <select onChange={this.props.onSelected}>{optionTags}</select>
         );
     }
 }
