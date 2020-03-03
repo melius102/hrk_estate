@@ -1,25 +1,21 @@
 const log = console.log;
 
 window.onload = () => {
-    let dom = (
-        <React.Fragment>
-            <Page1 />
-        </React.Fragment>
-    );
-    ReactDOM.render(dom, document.getElementById("root"));
-    getList(1, '0000000000');
+    getList(1, '0000000000').then(data => {
+        let dom = (
+            <React.Fragment>
+                <Page1 province={data} />
+            </React.Fragment>
+        );
+        ReactDOM.render(dom, document.getElementById("root"));
+    });
 };
 
-function getList(depth, code) {
+async function getList(depth, code) {
     if (!depth || !code) return;
-    fetch(`/getlist/${depth}/${code}`)
-        .then((response) => {
-            // log(response); // header
-            return response.json();
-        })
-        .then((data) => {
-            log(data);
-        });
+    let response = await fetch(`/getlist/${depth}/${code}`);
+    let data = await response.json();
+    return data;
 }
 
 // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
@@ -27,20 +23,63 @@ class Page1 extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            provinceValue: "",
+            districtValue: "",
+            villageValue: "",
+            district: null,
+            village: null,
             jsonData: null,
             LAWD_CD: null,
             DEAL_YMD: null
         };
-        this.hSelected = this.hSelected.bind(this);
+        this.hProvinceSelected = this.hProvinceSelected.bind(this);
+        this.hDistrictSelected = this.hDistrictSelected.bind(this);
+        this.hVillageSelected = this.hVillageSelected.bind(this);
         this.hClickLoad = this.hClickLoad.bind(this);
         this.hClickClear = this.hClickClear.bind(this);
         this.hMonthChange = this.hMonthChange.bind(this);
     }
 
-    hSelected(evt) {
-        log('hSelected');
-        if (evt.target.value) {
-            this.setState({ LAWD_CD: evt.target.value });
+    hProvinceSelected(evt) {
+        log('hProvinceSelected', evt.target.value);
+        let value = evt.target.value;
+        if (value) {
+            getList(2, value).then(data => {
+                log(data);
+                this.setState({
+                    provinceValue: value,
+                    districtValue: "",
+                    villageValue: "",
+                    district: data,
+                    village: null
+                });
+            });
+        }
+    }
+
+    hDistrictSelected(evt) {
+        log('hDistrictSelected', evt.target.value);
+        let value = evt.target.value;
+        if (value) {
+            getList(3, value).then(data => {
+                log(data);
+                this.setState({
+                    districtValue: value,
+                    villageValue: "",
+                    village: data
+                });
+            });
+        }
+    }
+
+    hVillageSelected(evt) {
+        log('hVillageSelected', evt.target.value);
+        let value = evt.target.value;
+        if (value) {
+            this.setState({
+                villageValue: value,
+                LAWD_CD: value.slice(0, 5)
+            });
         }
     }
 
@@ -85,9 +124,14 @@ class Page1 extends React.Component {
             }
         }
         log('items.length', items.length);
+
+        // if (this.state.district)
+        log('this.state.provinceValue', this.state.provinceValue);
         return (
             <React.Fragment>
-                <SelectDistrict onSelected={this.hSelected} />
+                <SelectArea value={this.state.provinceValue} options={this.props.province} onSelected={this.hProvinceSelected} />
+                <SelectArea value={this.state.districtValue} options={this.state.district} onSelected={this.hDistrictSelected} />
+                <SelectArea value={this.state.villageValue} options={this.state.village} onSelected={this.hVillageSelected} />
                 <input type="month" onChange={this.hMonthChange} />
                 <button onClick={this.hClickLoad}>Load</button>
                 <button onClick={this.hClickClear}>Clear</button>
@@ -97,16 +141,17 @@ class Page1 extends React.Component {
     }
 }
 
-class SelectDistrict extends React.Component {
+class SelectArea extends React.Component {
     render() {
-        let districtCodeKey = Object.keys(districtCode);
         let optionTags = [];
         optionTags.push(<option key={0} value={""}>선택</option>);
-        districtCodeKey.forEach((v, i) => {
-            optionTags.push(<option key={i + 1} value={v}>{districtCode[v].ko}</option>);
-        });
+        if (this.props.options) {
+            this.props.options.forEach((v, i) => {
+                optionTags.push(<option key={i + 1} value={v[0]}>{v[v.length - 1]}</option>);
+            });
+        }
         return (
-            <select onChange={this.props.onSelected}>{optionTags}</select>
+            <select value={this.props.value} onChange={this.props.onSelected}>{optionTags}</select>
         );
     }
 }
