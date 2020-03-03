@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+
 div,
 h1,
 h2,
@@ -14,6 +17,7 @@ td {
     padding: 0;
     border: 1px solid red;
     box-sizing: border-box;
+    font-family: 'Roboto', 'Nanum Gothic';
 }
 
 table {
