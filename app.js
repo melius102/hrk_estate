@@ -12,11 +12,13 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use('/', express.static('./public'));
 
-app.get('/data/:LAWD_CD/:DEAL_YMD', (req, res) => {
+app.get('/data/:LAWD_CD/:DEAL_YMD/:pageNo/:numOfRows', (req, res) => {
     let LAWD_CD = req.params.LAWD_CD;
     let DEAL_YMD = req.params.DEAL_YMD;
-    log("data:", LAWD_CD, DEAL_YMD);
-    gov_openapi.getJSON(LAWD_CD, DEAL_YMD, (err, json) => {
+    let pageNo = req.params.pageNo;
+    let numOfRows = req.params.numOfRows;
+    log("data:", LAWD_CD, DEAL_YMD, pageNo, numOfRows);
+    gov_openapi.getJSON(LAWD_CD, DEAL_YMD, pageNo, numOfRows, (err, json) => {
         if (err) { res.send('error'); }
         else { res.json(json); }
     });

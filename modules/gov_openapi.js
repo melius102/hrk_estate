@@ -10,8 +10,8 @@ const serviceKey = pKeys.serviceKey;
 const domain = "http://openapi.molit.go.kr/OpenAPI_ToolInstallPackage";
 const path = "/service/rest/RTMSOBJSvc/getRTMSDataSvcAptTradeDev";
 
-function getJSON(LAWD_CD, DEAL_YMD, cb) {
-    let URL = `${domain + path}?LAWD_CD=${LAWD_CD}&DEAL_YMD=${DEAL_YMD}&serviceKey=${serviceKey}`;
+function getJSON(LAWD_CD, DEAL_YMD, pageNo, numOfRows, cb) {
+    let URL = `${domain + path}?LAWD_CD=${LAWD_CD}&DEAL_YMD=${DEAL_YMD}&pageNo=${pageNo}&numOfRows=${numOfRows}&serviceKey=${serviceKey}`;
     http.get(URL, (result) => {
         // const { statusCode } = result;
         let rawData = '';
