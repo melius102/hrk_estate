@@ -1,0 +1,21 @@
+div,
+h1,
+h2,
+h3,
+p,
+input,
+button,
+table,
+thead,
+tbody,
+tr,
+td {
+    margin: 0;
+    padding: 0;
+    border: 1px solid red;
+    box-sizing: border-box;
+}
+
+table {
+    margin-top: 30px;
+}
