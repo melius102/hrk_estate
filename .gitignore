@@ -1,2 +1,4 @@
 /node_modules
 /modules/private_keys.js
+/public/data
+.DS_Store
