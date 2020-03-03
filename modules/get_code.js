@@ -1,7 +1,8 @@
 const log = console.log;
 const fs = require('fs'); // https://nodejs.org/api/fs.html
-const path = "./public/data/district_code_capital_area.txt";
 
+/*
+const path = "./public/data/district_code_capital_area.txt";
 fs.readFile(path, { encoding: 'utf8' }, function (err, data) {
     if (err) throw err;
     const separator = "\r\n";
@@ -21,9 +22,53 @@ fs.readFile(path, { encoding: 'utf8' }, function (err, data) {
     let file = "./public/data/district_code_capital_filtered.txt";
     fs.writeFile(file, newData, { encoding: 'utf8' }, (err) => { if (err) log(err) });
 });
+*/
 
 /*
-// method 1
+const path = "./public/data/district_code_capital_filtered.txt";
+fs.readFile(path, { encoding: 'utf8' }, function (err, data) {
+    if (err) throw err;
+    const separator = "\r\n";
+    let arr = data.split(separator); // CR(13) LF(10)
+    let newArr = arr.filter(v => v.slice(-2) !== "폐지"); // 존재
+    let newArr2 = [];
+    for (let i = 1; i < newArr.length; i++) {
+        let newItemArr = newArr[i].split(/[" "\t]/);
+        newItemArr.pop();
+        let length = newItemArr.length;
+
+        // if (length == 2) log(length, newItemArr); // 2 si
+        // if (length == 3) log(length, newItemArr); // 3 gu
+        // if (length == 4) log(length, newItemArr); // 4 dong
+        // if (length == 5) log(length, newItemArr); // 5 ~ 6 ri
+        if (length < 5) {
+            let newItem = newItemArr.join(" ");
+            newArr2.push(newItem);
+        }
+    }
+    let newData = newArr2.join(separator);
+    let file = "./public/data/district_code_capital_filtered2.txt";
+    fs.writeFile(file, newData, { encoding: 'utf8' }, (err) => { if (err) log(err) });
+});
+*/
+
+let codeObj = {};
+let codeArr = [];
+const path = "./public/data/district_code_capital_filtered2.txt";
+fs.readFile(path, { encoding: 'utf8' }, function (err, data) {
+    if (err) throw err;
+    const separator = "\r\n";
+    let arr = data.split(separator); // CR(13) LF(10)
+    for (let i = 0; i < arr.length; i++) {
+        let newItemArr = arr[i].split(" ");
+        codeArr.push(newItemArr);
+        codeObj[newItemArr[0]] = newItemArr;
+    }
+    // log(codeObj);
+});
+
+/*
+// method 2
 fs.open("./public/data/district_code_tmp.txt", "r", function (err, fd) {
     log(Buffer.isBuffer(buf));
     log(fd);
@@ -51,3 +96,34 @@ readInterface.on('line', function (line) {
     console.log(line);
 });
 */
+
+// '0000000000'
+// '1100000000'
+// '1144000000'
+function getList(depth, code) {
+    let list;
+    if (depth == 1) {
+        let regex = new RegExp("0{8}$");
+        list = codeArr.filter(v => regex.test(v[0]));
+    } else if (depth == 2) {
+        let code2 = code.slice(0, 2);
+        let regex = new RegExp(`^${code2}\\d{1,}0{6}$`);
+        list = codeArr.filter(v => regex.test(v[0]) && v.length == 3);
+    } else if (depth == 3) {
+        let code2 = code.slice(0, 4);
+        let regex = new RegExp(`^${code2}\\d{1,}$`);
+        list = codeArr.filter(v => regex.test(v[0]) && v.length == 4);
+    }
+    return list;
+}
+
+function getItem(code) {
+    return codeObj[code];
+}
+
+let get_code = {
+    getItem,
+    getList
+};
+
+module.exports = get_code;

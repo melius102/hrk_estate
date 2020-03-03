@@ -7,7 +7,20 @@ window.onload = () => {
         </React.Fragment>
     );
     ReactDOM.render(dom, document.getElementById("root"));
+    getList(1, '0000000000');
 };
+
+function getList(depth, code) {
+    if (!depth || !code) return;
+    fetch(`/getlist/${depth}/${code}`)
+        .then((response) => {
+            // log(response); // header
+            return response.json();
+        })
+        .then((data) => {
+            log(data);
+        });
+}
 
 // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
 class Page1 extends React.Component {
