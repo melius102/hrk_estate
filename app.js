@@ -35,3 +35,8 @@ const server = http.createServer(app);
 server.listen(port, function () {
     log("http://192.168.0.64:" + port);
 });
+
+// https://medium.com/@binyamin/creating-a-node-express-webpack-app-with-dev-and-prod-builds-a4962ce51334
+// https://www.youtube.com/channel/UCuRGaS7uXLAIrCrxKN_Ke7g
+// webpack-dev-server
+// webpack-dev-middleward

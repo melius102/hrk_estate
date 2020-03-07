@@ -1,3 +1,5 @@
+// import 'reset-css';
+import 'normalize.css';
 import '../scss/style.scss';
 
 const log = console.log;
