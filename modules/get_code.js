@@ -2,7 +2,7 @@ const log = console.log;
 const fs = require('fs'); // https://nodejs.org/api/fs.html
 
 /*
-const path = "./public/data/district_code_capital_area.txt";
+const path = "./modules/data/district_code_capital_area.txt";
 fs.readFile(path, { encoding: 'utf8' }, function (err, data) {
     if (err) throw err;
     const separator = "\r\n";
@@ -19,13 +19,13 @@ fs.readFile(path, { encoding: 'utf8' }, function (err, data) {
     // log((97).toString(16)); // 61, ascii -> hex 
     // log(parseInt("0x61")); // 97, hex -> decimal
 
-    let file = "./public/data/district_code_capital_filtered.txt";
+    let file = "./modules/data/district_code_capital_filtered.txt";
     fs.writeFile(file, newData, { encoding: 'utf8' }, (err) => { if (err) log(err) });
 });
 */
 
 /*
-const path = "./public/data/district_code_capital_filtered.txt";
+const path = "./modules/data/district_code_capital_filtered.txt";
 fs.readFile(path, { encoding: 'utf8' }, function (err, data) {
     if (err) throw err;
     const separator = "\r\n";
@@ -47,14 +47,14 @@ fs.readFile(path, { encoding: 'utf8' }, function (err, data) {
         }
     }
     let newData = newArr2.join(separator);
-    let file = "./public/data/district_code_capital_filtered2.txt";
+    let file = "./modules/data/district_code_capital_filtered2.txt";
     fs.writeFile(file, newData, { encoding: 'utf8' }, (err) => { if (err) log(err) });
 });
 */
 
 let codeObj = {};
 let codeArr = [];
-const path = "./public/data/district_code_capital_filtered2.txt";
+const path = "./modules/data/district_code_capital_filtered2.txt";
 fs.readFile(path, { encoding: 'utf8' }, function (err, data) {
     if (err) throw err;
     const separator = "\r\n";
@@ -69,7 +69,7 @@ fs.readFile(path, { encoding: 'utf8' }, function (err, data) {
 
 /*
 // method 2
-fs.open("./public/data/district_code_tmp.txt", "r", function (err, fd) {
+fs.open("./modules/data/district_code_tmp.txt", "r", function (err, fd) {
     log(Buffer.isBuffer(buf));
     log(fd);
 
@@ -86,7 +86,7 @@ fs.open("./public/data/district_code_tmp.txt", "r", function (err, fd) {
 // method 3
 const readline = require('readline'); // https://nodejs.org/api/readline.html
 const readInterface = readline.createInterface({
-    input: fs.createReadStream("./public/data/district_code_tmp2.txt"),
+    input: fs.createReadStream("./modules/data/district_code_tmp2.txt"),
     output: process.stdout,
     console: false
 });

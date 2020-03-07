@@ -10,7 +10,7 @@ const port = 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use('/', express.static('./public'));
+app.use('/', express.static('./dist/public'));
 
 app.get('/data/:LAWD_CD/:DEAL_YMD/:pageNo/:numOfRows', (req, res) => {
     let LAWD_CD = req.params.LAWD_CD;

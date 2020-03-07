@@ -1,4 +1,5 @@
 /node_modules
 /modules/private_keys.js
-/public/data
+/modules/data
+/dist/public/js
 .DS_Store

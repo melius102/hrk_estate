@@ -1,3 +1,5 @@
+import '../scss/style.scss';
+
 const log = console.log;
 
 window.onload = () => {
