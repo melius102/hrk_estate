@@ -7,8 +7,9 @@ module.exports = {
   },
   // output default > 'dist/main.js',
   output: {
-    path: path.resolve(__dirname, "dist/public/js"),
-    filename: '[name].js'
+    filename: '[name].js',
+    path: path.resolve(__dirname, "dist/public/js"), // absolute path
+    publicPath: '/assets' // relative to server root
   },
   target: 'web',
   mode: 'none',

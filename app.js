@@ -1,11 +1,21 @@
 const log = console.log;
 const http = require('http');
 const express = require('express');
+const webpack = require('webpack');
+const webpackDevMiddleware = require('webpack-dev-middleware');
 
 const gov_openapi = require('./modules/gov_openapi');
 const { getItem, getList } = require('./modules/get_code');
 const app = express();
 const port = 3000;
+
+// webpack: auto rebuild
+const config = require('./webpack.config.js');
+const compiler = webpack(config);
+
+app.use(webpackDevMiddleware(compiler, {
+    publicPath: config.output.publicPath
+}));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -38,5 +48,7 @@ server.listen(port, function () {
 
 // https://medium.com/@binyamin/creating-a-node-express-webpack-app-with-dev-and-prod-builds-a4962ce51334
 // https://www.youtube.com/channel/UCuRGaS7uXLAIrCrxKN_Ke7g
+
+// https://webpack.js.org/guides/development/#choosing-a-development-tool
 // webpack-dev-server
 // webpack-dev-middleward
