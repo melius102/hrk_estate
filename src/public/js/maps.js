@@ -1,6 +1,6 @@
 // http://192.168.0.64:3000
 import '../scss/maps.scss';
-import { province, seoul, gyeonggi } from './geoJsonList';
+import { province, name_obj } from './geoJsonList';
 
 const clog = console.log;
 clog('masps start');
@@ -32,12 +32,10 @@ function showMap(rgeo) {
             .attr("d", path)
             .on("click", function (d, index) {
                 if ($(this).hasClass("selected")) {
-                    if (d.properties[rgeo.prop_num] == 11) { // seoul
+                    clog(d.properties[rgeo.prop_num]);
+                    if (name_obj.hasOwnProperty(d.properties[rgeo.prop_num])) {
                         reset();
-                        showMap(seoul);
-                    } else if (d.properties[rgeo.prop_num] == 41) { // gyeonggi
-                        reset();
-                        showMap(gyeonggi);
+                        showMap(name_obj[d.properties[rgeo.prop_num]]);
                     }
                 }
                 svg.selectAll("path").classed("selected", d2 => d == d2);

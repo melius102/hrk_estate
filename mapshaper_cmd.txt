@@ -1,4 +1,11 @@
 GUI
 filter 'CTP_ENG_NM == "Seoul" || CTP_ENG_NM == "Gyeonggi-do"'
 filter '/^11\d{1,}/.test(SIG_CD)'
-filter '/^41\d{1,}/.test(SIG_CD)'
+filter '/^4146\d{1,}/.test(SIG_CD)'
+
+each 'SIG_CD="41110"' where='SIG_CD=="41111" || SIG_CD=="41113" || SIG_CD=="41115" || SIG_CD=="41117"'
+each 'SIG_CD="41130"' where='SIG_CD=="41131" || SIG_CD=="41133" || SIG_CD=="41135"'
+each 'SIG_CD="41170"' where='SIG_CD=="41171" || SIG_CD=="41173"'
+each 'SIG_CD="41270"' where='SIG_CD=="41271" || SIG_CD=="41273"'
+each 'SIG_CD="41280"' where='SIG_CD=="41281" || SIG_CD=="41285" || SIG_CD=="41287"'
+each 'SIG_CD="41460"' where='SIG_CD=="41461" || SIG_CD=="41463" || SIG_CD=="41465"'
