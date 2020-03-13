@@ -7,5 +7,18 @@ svg {
         fill: grey;
         stroke: white;
         stroke-width: 0.2px;
+
+        &.selected {
+            fill: #900C3F;
+        }
+    }
+
+    text {
+        fill: white;
+        display: none;
+
+        &.selected {
+            display: block;
+        }
     }
 }
