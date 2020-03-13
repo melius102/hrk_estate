@@ -1,0 +1,4 @@
+GUI
+filter 'CTP_ENG_NM == "Seoul" || CTP_ENG_NM == "Gyeonggi-do"'
+filter '/^11\d{1,}/.test(SIG_CD)'
+filter '/^41\d{1,}/.test(SIG_CD)'

@@ -1,11 +1,16 @@
 const log = console.log;
 const http = require('http');
+const path = require('path');
+
+// https://expressjs.com/en/resources/middleware.html
+// https://expressjs.com/en/guide/migrating-4.html
 const express = require('express');
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 
 const gov_openapi = require('./modules/gov_openapi');
 const { getItem, getList } = require('./modules/get_code');
+
 const app = express();
 const port = 3000;
 
@@ -13,14 +18,18 @@ const port = 3000;
 const config = require('./webpack.config.js');
 const compiler = webpack(config);
 
+// middleware
 app.use(webpackDevMiddleware(compiler, {
     publicPath: config.output.publicPath
 }));
 
+// app.use(methodOverride());
+// app.use(session({ resave: true, saveUninitialized: true, secret: 'uwotm8' }));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-
-app.use('/', express.static('./dist/public'));
+app.use(express.urlencoded({ extended: true }));
+// app.use(multer());
+app.use('/', express.static(path.join(__dirname, './dist/public')));
+app.use('/data', express.static(path.join(__dirname, './dist/data')));
 
 app.get('/data/:LAWD_CD/:DEAL_YMD/:pageNo/:numOfRows', (req, res) => {
     let LAWD_CD = req.params.LAWD_CD;

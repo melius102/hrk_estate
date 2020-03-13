@@ -1,8 +1,9 @@
 // import 'reset-css';
 import 'normalize.css';
 import '../scss/style.scss';
+import './maps';
 
-const log = console.log;
+const clog = console.log;
 
 window.onload = () => {
     getList(1, '0000000000').then(data => {
@@ -51,11 +52,11 @@ class Page1 extends React.Component {
     }
 
     hProvinceSelected(evt) {
-        log('hProvinceSelected', evt.target.value);
+        clog('hProvinceSelected', evt.target.value);
         let value = evt.target.value;
         if (value) {
             getList(2, value).then(data => {
-                log(data);
+                clog(data);
                 this.setState({
                     // Area
                     // selected value
@@ -73,11 +74,11 @@ class Page1 extends React.Component {
     }
 
     hDistrictSelected(evt) {
-        log('hDistrictSelected', evt.target.value);
+        clog('hDistrictSelected', evt.target.value);
         let value = evt.target.value;
         if (value) {
             getList(3, value).then(data => {
-                log(data);
+                clog(data);
                 let res = data.filter(v => v[0].slice(0, 5) !== value.slice(0, 5));
                 let moreDetail = res.length != 0;
                 if (moreDetail) {
@@ -113,7 +114,7 @@ class Page1 extends React.Component {
     }
 
     hVillageSelected(evt) {
-        log('hVillageSelected', evt.target.value);
+        clog('hVillageSelected', evt.target.value);
         let value = evt.target.value;
         if (value) {
             this.setState({
@@ -131,7 +132,7 @@ class Page1 extends React.Component {
     }
 
     hMonthChange(evt) {
-        log("hMonthChange");
+        clog("hMonthChange");
         let date = new Date(evt.target.value);
         let month = ("0" + (date.getMonth() + 1)).slice(-2);
         this.setState({
@@ -147,37 +148,37 @@ class Page1 extends React.Component {
     // componentDidMount() { }
     // www.code.go.kr
     hClickLoad(evt) {
-        log('hClickLoad');
+        clog('hClickLoad');
         if (!this.state.LAWD_CD || !this.state.DEAL_YMD) return;
         let LAWD_CD = this.state.LAWD_CD;
         let DEAL_YMD = this.state.DEAL_YMD;
         fetch(`/data/${LAWD_CD}/${DEAL_YMD}/${this.state.pageNo}/${this.state.numOfRows}`).then((response) => {
-            // log(response); // header
+            // clog(response); // header
             return response.json();
         }).then((data) => {
             let jsonData = JSON.parse(data);
             let totalCount = jsonData.response.body.totalCount;
             let totalPage = Math.ceil(totalCount / this.state.numOfRows);
-            log("numOfRows", jsonData.response.body.numOfRows);
-            log("pageNo", jsonData.response.body.pageNo);
-            log("totalCount", jsonData.response.body.totalCount);
-            log("totalPage", totalPage);
+            clog("numOfRows", jsonData.response.body.numOfRows);
+            clog("pageNo", jsonData.response.body.pageNo);
+            clog("totalCount", jsonData.response.body.totalCount);
+            clog("totalPage", totalPage);
             this.setState({ pageNoDisplay: "initial", totalCount, totalPage, jsonData });
         });
     }
 
     hClickClear(evt) {
-        log('hClickClear');
+        clog('hClickClear');
         this.setState({ jsonData: null });
     }
 
     hPageChange(evt) {
-        log('hPageChange', evt.target.value);
+        clog('hPageChange', evt.target.value);
         this.setState({ pageNo: evt.target.value });
     }
 
     render() {
-        log("render");
+        clog("render");
         let items = [];
         if (this.state.jsonData) {
             let itemData = this.state.jsonData.response.body.items.item;
@@ -185,7 +186,7 @@ class Page1 extends React.Component {
                 itemData.forEach((v, i) => items.push(<Item key={i} data={v} />));
             }
         }
-        log('items.length', items.length);
+        clog('items.length', items.length);
 
         // if (this.state.district)
         return (
