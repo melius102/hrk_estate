@@ -39,6 +39,7 @@ export default class RegionSelect extends React.Component {
         if (value) {
             getList(2, value).then(data => {
                 clog(data);
+                this.props.dpSelectRegion(value, '0000000000');
                 this.setState({
                     // Area
                     // selected value
@@ -64,6 +65,7 @@ export default class RegionSelect extends React.Component {
                 let res = data.filter(v => v[0].slice(0, 5) !== value.slice(0, 5));
                 let moreDetail = res.length != 0;
                 if (moreDetail) {
+                    this.props.dpSelectRegion(value, '0000000000');
                     this.setState({
                         // Area
                         // selected value
@@ -78,6 +80,7 @@ export default class RegionSelect extends React.Component {
                     });
                 }
                 else {
+                    this.props.dpSelectRegion(value.slice(0, 2) + '0'.repeat(8), value);
                     this.setState({
                         // Area
                         // selected value
@@ -99,6 +102,7 @@ export default class RegionSelect extends React.Component {
         clog('hVillageSelected', evt.target.value);
         let value = evt.target.value;
         if (value) {
+            this.props.dpSelectRegion(value.slice(0, 4) + '0'.repeat(6), value);
             this.setState({
                 // Area
                 // selected value

@@ -1,26 +1,26 @@
-import RegionSelect from '../components/region-select';
+import Maps from '../components/maps';
 import * as actions from '../actions';
 import { connect } from 'react-redux';
 
 const clog = console.log;
 
-const mapStateToProps = (state, ownProps) => {
-    clog('mapStateToProps', ownProps);
+const mapStateToProps = (state) => {
+    clog('mapStateToProps', state);
     return {
-        province: ownProps.province
+        mapCode: state.mapCode,
+        regCode: state.regCode
     };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     clog('mapDispatchToProps', ownProps);
     return {
-        dpShowItems: (itemListData) => dispatch(actions.showItems(itemListData)),
         dpSelectRegion: (mapCode, regCode) => dispatch(actions.selectRegion(mapCode, regCode))
     };
 }
 
-const RegionSelectContainer = connect(
+const MapsContainer = connect(
     mapStateToProps, mapDispatchToProps
-)(RegionSelect);
+)(Maps);
 
-export default RegionSelectContainer;
+export default MapsContainer;

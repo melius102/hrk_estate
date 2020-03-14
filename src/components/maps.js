@@ -10,9 +10,9 @@ export default class Maps extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            set: false,
-            mapCode: '0000000000',
-            regCode: '0000000000'
+            set: true,
+            mapCode: null,
+            regCode: null
         };
 
         this.svg = null;
@@ -26,19 +26,17 @@ export default class Maps extends React.Component {
 
     static getDerivedStateFromProps(props, state) {
         clog("getDerivedStateFromProps");
-        if (state.set) {
+        if (state.mapCode == props.mapCode) {
             return {
                 set: false,
-                mapCode: state.mapCode,
-                regCode: state.regCode
+                regCode: props.regCode
             }
-        } else if (props.mapCode) {
+        } else {
             return {
+                set: true,
                 mapCode: props.mapCode,
                 regCode: props.regCode
-            };
-        } else {
-            return null;
+            }
         }
     }
 
@@ -61,8 +59,15 @@ export default class Maps extends React.Component {
     }
 
     showMap(rmap, regin) {
-        clog('regin', regin);
+        clog('showMap', rmap, regin);
         let that = this;
+        if (!that.state.set) {
+            clog(that.state.regCode);
+            that.svg.selectAll("path").classed("selected", d => fullCode(d.properties[rmap.prop_num]) == that.state.regCode);
+            return;
+        }
+
+        reset();
         that.svg = d3.select('#maps').append('svg')
             .attr("width", that.width)
             .attr("height", that.height);
@@ -86,16 +91,19 @@ export default class Maps extends React.Component {
                 })
                 .on("click", function (d, index) {
                     clog(d.properties[rmap.prop_num]);
-                    if ($(this).hasClass("selected")) {
+                    if ($(this).hasClass("selected")) { // 2nd click
                         let rcode = fullCode(d.properties[rmap.prop_num]);
                         if (code2map.hasOwnProperty(rcode)) {
-                            reset();
+                            // reset();
                             // that.showMap(code2map[d.properties[rmap.prop_num]]);
-                            that.setState({ mapCode: rcode, set: true });
+                            // that.setState({ mapCode: rcode, set: true });
+                            that.props.dpSelectRegion(rcode, null);
                         }
                     }
-                    that.svg.selectAll("path").classed("selected", d2 => d == d2);
-                    // svg.selectAll("text").classed("selected", d2 => d == d2);
+                    let rcode = fullCode(d.properties[rmap.prop_num]);
+                    that.props.dpSelectRegion(that.state.mapCode, rcode);
+                    // that.svg.selectAll("path").classed("selected", d2 => d == d2);
+                    // that.svg.selectAll("text").classed("selected", d2 => d == d2);
                 })
                 // .on("mouseenter", () => clog("enter"))
                 // .on("mouseleave", () => clog("leave"));
@@ -121,7 +129,7 @@ export default class Maps extends React.Component {
         });
 
         function reset() {
-            that.svg.remove();
+            if (that.svg) that.svg.remove();
             $("#rname").hide();
         }
 

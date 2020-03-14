@@ -20,7 +20,7 @@ const store = createStore(reducers, enhancer);
 window.onload = () => {
     getList(1, initCode).then(data => {
         ReactDOM.render(<Provider store={store}>
-            <App mapCode={initCode} regCode={initCode} province={data} />
+            <App province={data} />
         </Provider>, document.getElementById("root"));
     });
 };
