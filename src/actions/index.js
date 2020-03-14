@@ -1,4 +1,4 @@
-import * as types from './ActionTypes';
+import * as types from './action-types';
 
 export const selectRegion = (mapCode, regCode) => ({
     type: types.SELREGION,

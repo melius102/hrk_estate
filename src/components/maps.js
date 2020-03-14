@@ -2,7 +2,7 @@ import React from 'react';
 
 import '../scss/maps.scss';
 
-import { code2map } from '../lib/geoJsonList';
+import { code2map } from '../lib/geo-json-list';
 
 const clog = console.log;
 

@@ -8,7 +8,7 @@ import 'normalize.css';
 import './scss/style.scss';
 
 import { getList } from './lib/util';
-import App from './containers/App';
+import App from './containers/app';
 import reducers from './reducers';
 
 const clog = console.log;
