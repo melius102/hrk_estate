@@ -22,7 +22,7 @@ export default class RegionSelect extends React.Component {
 
             // Result
             pageNo: 1, numOfRows: 10, pageNoDisplay: "none",
-            totalCount: 1, totalPage: 1, jsonData: null
+            totalCount: 1, totalPage: 1
         };
         this.hProvinceSelected = this.hProvinceSelected.bind(this);
         this.hDistrictSelected = this.hDistrictSelected.bind(this);
@@ -49,7 +49,7 @@ export default class RegionSelect extends React.Component {
 
                     // Result
                     pageNo: 1, pageNoDisplay: "none",
-                    totalCount: 1, totalPage: 1, jsonData: null
+                    totalCount: 1, totalPage: 1
                 });
             });
         }
@@ -74,7 +74,7 @@ export default class RegionSelect extends React.Component {
 
                         // Result
                         pageNo: 1, pageNoDisplay: "none",
-                        totalCount: 1, totalPage: 1, jsonData: null
+                        totalCount: 1, totalPage: 1
                     });
                 }
                 else {
@@ -88,7 +88,7 @@ export default class RegionSelect extends React.Component {
 
                         // Result
                         pageNo: 1, pageNoDisplay: "none",
-                        totalCount: 1, totalPage: 1, jsonData: null
+                        totalCount: 1, totalPage: 1
                     });
                 }
             });
@@ -108,7 +108,7 @@ export default class RegionSelect extends React.Component {
 
                 // Result
                 pageNo: 1, pageNoDisplay: "none",
-                totalCount: 1, totalPage: 1, jsonData: null
+                totalCount: 1, totalPage: 1
             });
         }
     }
@@ -123,7 +123,7 @@ export default class RegionSelect extends React.Component {
 
             // Result
             pageNo: 1, pageNoDisplay: "none",
-            totalCount: 1, totalPage: 1, jsonData: null
+            totalCount: 1, totalPage: 1
         });
     }
 
@@ -145,13 +145,14 @@ export default class RegionSelect extends React.Component {
             clog("pageNo", jsonData.response.body.pageNo);
             clog("totalCount", jsonData.response.body.totalCount);
             clog("totalPage", totalPage);
-            this.setState({ pageNoDisplay: "initial", totalCount, totalPage, jsonData });
+            this.props.dpShowItems(jsonData);
+            this.setState({ pageNoDisplay: "initial", totalCount, totalPage });
         });
     }
 
     hClickClear(evt) {
         clog('hClickClear');
-        this.setState({ jsonData: null });
+        this.props.dpShowItems(null);
     }
 
     hPageChange(evt) {
@@ -161,16 +162,6 @@ export default class RegionSelect extends React.Component {
 
     render() {
         clog("render");
-        let items = [];
-        if (this.state.jsonData) {
-            let itemData = this.state.jsonData.response.body.items.item;
-            if (itemData instanceof Array) {
-                itemData.forEach((v, i) => items.push(<Item key={i} data={v} />));
-            }
-        }
-        clog('items.length', items.length);
-
-        // if (this.state.district)
         return (
             <React.Fragment>
                 <SelectArea value={this.state.provinceValue} options={this.props.province}
@@ -184,7 +175,6 @@ export default class RegionSelect extends React.Component {
                     max={this.state.totalPage} value={this.state.pageNo} onChange={this.hPageChange} />
                 <button onClick={this.hClickLoad}>Load</button>
                 <button onClick={this.hClickClear}>Clear</button>
-                {items}
             </React.Fragment>
         );
     }

@@ -5,7 +5,7 @@ export const selectRegion = (mapCode, regCode) => ({
     mapCode, regCode
 });
 
-export const showItems = (items) => ({
+export const showItems = (itemListData) => ({
     type: types.SHOWITEMS,
-    items
+    itemListData
 });

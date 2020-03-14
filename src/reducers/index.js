@@ -3,7 +3,7 @@ import * as types from '../actions/action-types';
 const initialState = {
     mapCode: null,
     regCode: null,
-    items: null
+    itemListData: null
 };
 
 function regionSelector(state = initialState, action) {
@@ -15,7 +15,7 @@ function regionSelector(state = initialState, action) {
             };
         case types.SHOWITEMS:
             return {
-                items: action.items
+                itemListData: action.itemListData
             };
         default:
             return state;
