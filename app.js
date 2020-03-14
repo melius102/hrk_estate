@@ -28,8 +28,12 @@ app.use(webpackDevMiddleware(compiler, {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // app.use(multer());
-app.use('/', express.static(path.join(__dirname, './dist/public')));
+app.use('/public', express.static(path.join(__dirname, './dist/public')));
 app.use('/data', express.static(path.join(__dirname, './dist/data')));
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'dist/public/index.html'));
+});
 
 app.get('/data/:LAWD_CD/:DEAL_YMD/:pageNo/:numOfRows', (req, res) => {
     let LAWD_CD = req.params.LAWD_CD;

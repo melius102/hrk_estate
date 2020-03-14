@@ -3,12 +3,12 @@ const path = require('path');
 module.exports = {
   // entry default > 'src/index.js',
   entry: {
-    index: './src/public/js/index.js'
+    index: './src/index.js'
   },
   // output default > 'dist/main.js',
   output: {
     filename: '[name].js',
-    path: path.resolve(__dirname, "dist/public/js"), // absolute path
+    path: path.resolve(__dirname, "dist/public"), // absolute path
     publicPath: '/assets' // relative to server root
   },
   target: 'web',

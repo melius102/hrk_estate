@@ -1,6 +1,6 @@
 // http://192.168.0.64:3000
 import '../scss/maps.scss';
-import { code2map } from './geoJsonList';
+import { code2map } from '../lib/geoJsonList';
 
 const clog = console.log;
 
@@ -10,7 +10,7 @@ export default class Maps extends React.Component {
         this.state = {
             set: false,
             mapCode: '0000000000',
-            region: null
+            region: '0000000000'
         };
 
         this.svg = null;
@@ -25,9 +25,16 @@ export default class Maps extends React.Component {
     static getDerivedStateFromProps(props, state) {
         clog("getDerivedStateFromProps");
         if (state.set) {
-            return { mapCode: state.mapCode, set: false }
+            return {
+                set: false,
+                mapCode: state.mapCode,
+                region: state.region
+            }
         } else if (props.mapCode) {
-            return { mapCode: props.mapCode };
+            return {
+                mapCode: props.mapCode,
+                region: props.region
+            };
         } else {
             return null;
         }
@@ -43,40 +50,45 @@ export default class Maps extends React.Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         clog('masps DidUpdate');
-        this.showMap(code2map[this.state.mapCode]);
+        this.showMap(code2map[this.state.mapCode], this.state.region);
     }
 
     componentDidMount() {
         clog('masps DidMount');
-        this.showMap(code2map[this.state.mapCode]);
+        this.showMap(code2map[this.state.mapCode], this.state.region);
     }
 
-    showMap(rgeo) {
+    showMap(rmap, regin) {
+        clog('regin', regin);
         let that = this;
         that.svg = d3.select('#maps').append('svg')
             .attr("width", that.width)
             .attr("height", that.height);
 
-        that.projection = d3.geoMercator().center([rgeo.lon, rgeo.lat])
-            .scale(rgeo.scale).rotate([0, 0])
+        that.projection = d3.geoMercator().center([rmap.lon, rmap.lat])
+            .scale(rmap.scale).rotate([0, 0])
             .translate([that.width / 2, that.height / 2]);
 
         // https://github.com/d3/d3-geo
         // let projection = d3.geoAlbersUsa();
         that.path = d3.geoPath().projection(that.projection);
 
-        d3.json(rgeo.url).then(json => {
+        d3.json(rmap.url).then(json => {
             // clog(json);
             that.svg.selectAll("path")
                 .data(json.features)
                 .enter().append("path")
                 .attr("d", that.path)
+                .classed("selected", d => {
+                    return fullCode(d.properties[rmap.prop_num]) == regin;
+                })
                 .on("click", function (d, index) {
+                    clog(d.properties[rmap.prop_num]);
                     if ($(this).hasClass("selected")) {
-                        let rcode = fullCode(d.properties[rgeo.prop_num]);
+                        let rcode = fullCode(d.properties[rmap.prop_num]);
                         if (code2map.hasOwnProperty(rcode)) {
                             reset();
-                            // that.showMap(code2map[d.properties[rgeo.prop_num]]);
+                            // that.showMap(code2map[d.properties[rmap.prop_num]]);
                             that.setState({ mapCode: rcode, set: true });
                         }
                     }
@@ -93,17 +105,17 @@ export default class Maps extends React.Component {
                     $("#rname").css({
                         top: event.clientY - 30 + 'px',
                         left: event.clientX + 'px'
-                    }).text(d.properties[rgeo.prop_name]);
+                    }).text(d.properties[rmap.prop_name]);
                 })
                 .append("title")
-                .text(d => d.properties[rgeo.prop_name]);
+                .text(d => d.properties[rmap.prop_name]);
 
             that.svg.selectAll("text")
                 .data(json.features)
                 .enter().append("text")
                 .attr("text-anchor", "middle")
                 .attr("transform", function (d) { return "translate(" + that.path.centroid(d) + ")"; })
-                .text(d => d.properties[rgeo.prop_name]);
+                .text(d => d.properties[rmap.prop_name]);
         });
 
         function reset() {
@@ -112,9 +124,7 @@ export default class Maps extends React.Component {
         }
 
         function fullCode(code) {
-            let rcode = code + '0'.repeat(10 - code.length);
-            clog(rcode);
-            return rcode;
+            return code + '0'.repeat(10 - code.length);
         }
     }
 }

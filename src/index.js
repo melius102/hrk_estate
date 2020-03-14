@@ -1,8 +1,8 @@
 // import 'reset-css';
 import 'normalize.css';
-import '../scss/style.scss';
-import { getList } from './util';
-import App from './App';
+import './scss/style.scss';
+import { getList } from './lib/util';
+import App from './containers/App';
 
 const clog = console.log;
 const initCode = '0000000000';

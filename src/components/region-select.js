@@ -1,4 +1,4 @@
-import { getList } from './util';
+import { getList } from '../lib/util';
 import Item from './item';
 
 const clog = console.log;
