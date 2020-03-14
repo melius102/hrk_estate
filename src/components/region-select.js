@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { getList } from '../lib/util';
 import Item from './item';
 

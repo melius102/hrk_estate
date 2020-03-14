@@ -19,7 +19,8 @@ module.exports = {
       {
         test: /\.js$/,
         use: {
-          loader: "babel-loader"
+          loader: "babel-loader",
+          // query: { compact: false }
         }
       }, {
         test: /\.css$/i,

@@ -1,5 +1,7 @@
-// http://192.168.0.64:3000
+import React from 'react';
+
 import '../scss/maps.scss';
+
 import { code2map } from '../lib/geoJsonList';
 
 const clog = console.log;
@@ -10,7 +12,7 @@ export default class Maps extends React.Component {
         this.state = {
             set: false,
             mapCode: '0000000000',
-            region: '0000000000'
+            regCode: '0000000000'
         };
 
         this.svg = null;
@@ -28,12 +30,12 @@ export default class Maps extends React.Component {
             return {
                 set: false,
                 mapCode: state.mapCode,
-                region: state.region
+                regCode: state.regCode
             }
         } else if (props.mapCode) {
             return {
                 mapCode: props.mapCode,
-                region: props.region
+                regCode: props.regCode
             };
         } else {
             return null;
@@ -50,12 +52,12 @@ export default class Maps extends React.Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         clog('masps DidUpdate');
-        this.showMap(code2map[this.state.mapCode], this.state.region);
+        this.showMap(code2map[this.state.mapCode], this.state.regCode);
     }
 
     componentDidMount() {
         clog('masps DidMount');
-        this.showMap(code2map[this.state.mapCode], this.state.region);
+        this.showMap(code2map[this.state.mapCode], this.state.regCode);
     }
 
     showMap(rmap, regin) {
