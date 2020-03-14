@@ -1,13 +1,17 @@
 // http://192.168.0.64:3000
 import '../scss/maps.scss';
-import { province, name_obj } from './geoJsonList';
+import { code2map } from './geoJsonList';
 
 const clog = console.log;
 
 export default class Maps extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { region: province };
+        this.state = {
+            set: false,
+            mapCode: '0000000000',
+            region: null
+        };
 
         this.svg = null;
         this.projection = null;
@@ -16,6 +20,17 @@ export default class Maps extends React.Component {
         this.height = 500;
 
         this.showMap = this.showMap.bind(this);
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        clog("getDerivedStateFromProps");
+        if (state.set) {
+            return { mapCode: state.mapCode, set: false }
+        } else if (props.mapCode) {
+            return { mapCode: props.mapCode };
+        } else {
+            return null;
+        }
     }
 
     render() {
@@ -28,12 +43,12 @@ export default class Maps extends React.Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         clog('masps DidUpdate');
-        this.showMap(this.state.region);
+        this.showMap(code2map[this.state.mapCode]);
     }
 
     componentDidMount() {
         clog('masps DidMount');
-        this.showMap(this.state.region);
+        this.showMap(code2map[this.state.mapCode]);
     }
 
     showMap(rgeo) {
@@ -58,11 +73,11 @@ export default class Maps extends React.Component {
                 .attr("d", that.path)
                 .on("click", function (d, index) {
                     if ($(this).hasClass("selected")) {
-                        clog(d.properties[rgeo.prop_num]);
-                        if (name_obj.hasOwnProperty(d.properties[rgeo.prop_num])) {
+                        let rcode = fullCode(d.properties[rgeo.prop_num]);
+                        if (code2map.hasOwnProperty(rcode)) {
                             reset();
-                            // that.showMap(name_obj[d.properties[rgeo.prop_num]]);
-                            that.setState({ region: name_obj[d.properties[rgeo.prop_num]] });
+                            // that.showMap(code2map[d.properties[rgeo.prop_num]]);
+                            that.setState({ mapCode: rcode, set: true });
                         }
                     }
                     that.svg.selectAll("path").classed("selected", d2 => d == d2);
@@ -94,6 +109,12 @@ export default class Maps extends React.Component {
         function reset() {
             that.svg.remove();
             $("#rname").hide();
+        }
+
+        function fullCode(code) {
+            let rcode = code + '0'.repeat(10 - code.length);
+            clog(rcode);
+            return rcode;
         }
     }
 }

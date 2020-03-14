@@ -2,18 +2,15 @@
 import 'normalize.css';
 import '../scss/style.scss';
 import { getList } from './util';
-import Maps from './maps';
-import RegionSelect from './region-select';
+import App from './App';
 
 const clog = console.log;
+const initCode = '0000000000';
 
 window.onload = () => {
-    getList(1, '0000000000').then(data => {
+    getList(1, initCode).then(data => {
         let dom = (
-            <React.Fragment>
-                <Maps />
-                <RegionSelect province={data} />
-            </React.Fragment>
+            <App mapCode={initCode} province={data} />
         );
         ReactDOM.render(dom, document.getElementById("root"));
     });

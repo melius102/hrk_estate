@@ -52,13 +52,14 @@ export const yongin = {
     prop_num: "SIG_CD", prop_name: "SIG_KOR_NM"
 }
 
-export const name_obj = {
-    '11': seoul,
-    '41': gyeonggi,
-    '41110': suwon,
-    '41130': seongnam,
-    '41170': anyang,
-    '41270': ansan,
-    '41280': goyang,
-    '41460': yongin
+export const code2map = {
+    '0000000000': province,
+    '1100000000': seoul,
+    '4100000000': gyeonggi,
+    '4111000000': suwon,
+    '4113000000': seongnam,
+    '4117000000': anyang,
+    '4127000000': ansan,
+    '4128000000': goyang,
+    '4146000000': yongin
 }
