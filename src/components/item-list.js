@@ -5,7 +5,6 @@ const clog = console.log;
 
 export default class ItemList extends React.Component {
     render() {
-        clog("ItemList");
         let items = [];
         if (this.props.itemListData) {
             let itemData = this.props.itemListData.response.body.items.item;
@@ -13,7 +12,6 @@ export default class ItemList extends React.Component {
                 itemData.forEach((v, i) => items.push(<Item key={i} data={v} />));
             }
         }
-        clog('items.length', items.length);
         return (
             <React.Fragment>
                 {items}

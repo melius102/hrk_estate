@@ -1,4 +1,5 @@
 export const UPDATE_MAPCODE = 'UPDATE_MAPCODE';
+export const UPDATE_OPTIONS = 'UPDATE_OPTIONS';
 export const UPDATE_DATE = 'UPDATE_DATE';
-export const PAGE_CHANGE = "PAGE_CHANGE";
+export const PAGE_CHANGE = 'PAGE_CHANGE';
 export const UPDATE_ITEM_LIST = 'UPDATE_ITEM_LIST';

@@ -9,11 +9,7 @@ export default class RegionSelect extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            // Area
-            // selected value
-            districtDisplay: "none", villageDisplay: "none",
-            // options list
-            district: null, village: null,
+            districtDisplay: "initial", villageDisplay: "initial",
         };
         this.hProvinceSelected = this.hProvinceSelected.bind(this);
         this.hDistrictSelected = this.hDistrictSelected.bind(this);
@@ -22,75 +18,37 @@ export default class RegionSelect extends React.Component {
 
     hProvinceSelected(evt) {
         clog('hProvinceSelected', evt.target.value);
-        let value = evt.target.value;
-        if (value) {
-            getList(2, value).then(data => {
-                clog(data);
-                this.props.dpUpdateMapcode(value, nullCode, 1, null);
-                this.setState({
-                    // Area
-                    districtDisplay: "initial", villageDisplay: "none",
-                    // options list
-                    district: data, village: null,
-                });
-            });
+        let selectedCode = evt.target.value;
+        if (selectedCode) {
+            this.props.dpProvinceSelected(selectedCode);
         }
     }
 
     hDistrictSelected(evt) {
         clog('hDistrictSelected', evt.target.value);
-        let value = evt.target.value;
-        if (value) {
-            getList(3, value).then(data => {
-                clog(data);
-                let res = data.filter(v => v[0].slice(0, 5) !== value.slice(0, 5));
-                let moreDetail = res.length != 0;
-                if (moreDetail) {
-                    this.props.dpUpdateMapcode(value, nullCode, 2, null);
-                    this.setState({
-                        // Area
-                        // selected value
-                        villageDisplay: "initial",
-                        // options list
-                        village: data,
-                    });
-                }
-                else {
-                    this.props.dpUpdateMapcode(value.slice(0, 2) + '0'.repeat(8), value, 3, value.slice(0, 5));
-                    this.setState({
-                        // Area
-                        // selected value
-                        villageDisplay: "none",
-                        // options list
-                        village: data,
-                    });
-                }
-            });
+        let selectedCode = evt.target.value;
+        if (selectedCode) {
+            this.props.dpDistrictSelected(selectedCode);
         }
     }
 
     hVillageSelected(evt) {
         clog('hVillageSelected', evt.target.value);
-        let value = evt.target.value;
-        if (value) {
-            this.props.dpUpdateMapcode(value.slice(0, 4) + '0'.repeat(6), value, 4, value.slice(0, 5));
+        let selectedCode = evt.target.value;
+        if (selectedCode) {
+            this.props.dpUpdateMapcode(selectedCode.slice(0, 4) + '0'.repeat(6), selectedCode, 4, selectedCode.slice(0, 5));
         }
     }
 
     render() {
-        clog("render");
-        // clog("this.props.villageCode", this.props.villageCode);
-
-        // this.state.districtDisplay
-        // this.state.villageDisplay
         return (
             <React.Fragment>
-                <SelectArea value={this.props.provinceCode} options={this.props.province}
+                <SelectArea value={this.props.provinceCode} options={this.props.provinceOptions}
                     onSelected={this.hProvinceSelected} />
-                <SelectArea value={this.props.districtCode} options={this.state.district}
-                    onSelected={this.hDistrictSelected} display={"initial"} />
-                <SelectArea value={this.props.villageCode} options={this.state.village}
-                    onSelected={this.hVillageSelected} display={"initial"} />
+                <SelectArea value={this.props.districtCode} options={this.props.districtOptions}
+                    onSelected={this.hDistrictSelected} display={this.state.districtDisplay} />
+                <SelectArea value={this.props.villageCode} options={this.props.villageOptions}
+                    onSelected={this.hVillageSelected} display={this.state.villageDisplay} />
             </React.Fragment>
         );
     }

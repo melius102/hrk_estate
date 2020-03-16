@@ -9,6 +9,9 @@ const initialState = {
     districtCode: nullCode,
     villageCode: nullCode,
 
+    districtOptions: null,
+    villageOptions: null,
+
     // date select
     LAWD_CD: null,
     DEAL_YMD: null,
@@ -35,6 +38,9 @@ function regionSelector(state = initialState, action) {
     newState.provinceCode = state.provinceCode;
     newState.districtCode = state.districtCode;
     newState.villageCode = state.villageCode;
+
+    newState.districtOptions = state.districtOptions;
+    newState.villageOptions = state.villageOptions;
 
     newState.LAWD_CD = state.LAWD_CD;
     newState.DEAL_YMD = state.DEAL_YMD;
@@ -72,6 +78,11 @@ function regionSelector(state = initialState, action) {
 
             newState.LAWD_CD = action.LAWD_CD;
 
+            return newState;
+
+        case types.UPDATE_OPTIONS:
+            newState.districtOptions = action.districtOptions;
+            newState.villageOptions = action.villageOptions;
             return newState;
 
         case types.UPDATE_DATE:

@@ -6,7 +6,7 @@ export default class ResultLoad extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            pageNoDisplay: "none",
+            pageNoDisplay: "initial",
             totalCount: 1,
             totalPage: 1
         }
@@ -27,7 +27,7 @@ export default class ResultLoad extends React.Component {
         }).then((data) => {
             let jsonData = JSON.parse(data);
             let totalCount = jsonData.response.body.totalCount;
-            let totalPage = Math.ceil(totalCount / this.state.numOfRows);
+            let totalPage = Math.ceil(totalCount / numOfRows);
             clog("numOfRows", jsonData.response.body.numOfRows);
             clog("pageNo", jsonData.response.body.pageNo);
             clog("totalCount", jsonData.response.body.totalCount);

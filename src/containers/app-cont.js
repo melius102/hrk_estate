@@ -15,10 +15,8 @@ export default class App extends React.Component {
     render() {
         return (
             <React.Fragment>
-                {/* <Maps mapCode={this.props.mapCode} regCode={this.props.regCode} /> */}
-                {/* <RegionSelect province={this.props.province} /> */}
                 <MapsContainer />
-                <RegionSelectContainer province={this.props.province} />
+                <RegionSelectContainer provinceOptions={this.props.provinceOptions} />
                 <DateSelectContainer />
                 <ResultLoadContainer />
                 <ItemListContainer />

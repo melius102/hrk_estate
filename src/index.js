@@ -9,7 +9,7 @@ import 'normalize.css';
 import './scss/style.scss';
 
 import { getList, nullCode } from './lib/util';
-import App from './containers/app';
+import App from './containers/app-cont';
 import reducers from './reducers';
 import tmpMiddleware from './lib/tmp-middleware';
 
@@ -23,7 +23,7 @@ const store = createStore(reducers, enhancer);
 window.onload = () => {
     getList(1, nullCode).then(data => {
         ReactDOM.render(<Provider store={store}>
-            <App province={data} />
+            <App provinceOptions={data} />
         </Provider>, document.getElementById("root"));
     });
 };
