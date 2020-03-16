@@ -1,7 +1,6 @@
 import React from 'react';
 
-import { getList } from '../lib/util';
-import Item from './item';
+import { getList, nullCode } from '../lib/util';
 
 const clog = console.log;
 
@@ -12,25 +11,13 @@ export default class RegionSelect extends React.Component {
         this.state = {
             // Area
             // selected value
-            provinceValue: "", districtValue: "", villageValue: "",
             districtDisplay: "none", villageDisplay: "none",
             // options list
-            district: null, village: null, LAWD_CD: null,
-
-            // Date
-            DEAL_YMD: null,
-
-            // Result
-            pageNo: 1, numOfRows: 10, pageNoDisplay: "none",
-            totalCount: 1, totalPage: 1
+            district: null, village: null,
         };
         this.hProvinceSelected = this.hProvinceSelected.bind(this);
         this.hDistrictSelected = this.hDistrictSelected.bind(this);
         this.hVillageSelected = this.hVillageSelected.bind(this);
-        this.hMonthChange = this.hMonthChange.bind(this);
-        this.hClickLoad = this.hClickLoad.bind(this);
-        this.hClickClear = this.hClickClear.bind(this);
-        this.hPageChange = this.hPageChange.bind(this);
     }
 
     hProvinceSelected(evt) {
@@ -39,18 +26,12 @@ export default class RegionSelect extends React.Component {
         if (value) {
             getList(2, value).then(data => {
                 clog(data);
-                this.props.dpSelectRegion(value, '0000000000');
+                this.props.dpUpdateMapcode(value, nullCode, 1, null);
                 this.setState({
                     // Area
-                    // selected value
-                    provinceValue: value, districtValue: "", villageValue: "",
                     districtDisplay: "initial", villageDisplay: "none",
                     // options list
-                    district: data, village: null, LAWD_CD: null,
-
-                    // Result
-                    pageNo: 1, pageNoDisplay: "none",
-                    totalCount: 1, totalPage: 1
+                    district: data, village: null,
                 });
             });
         }
@@ -65,33 +46,23 @@ export default class RegionSelect extends React.Component {
                 let res = data.filter(v => v[0].slice(0, 5) !== value.slice(0, 5));
                 let moreDetail = res.length != 0;
                 if (moreDetail) {
-                    this.props.dpSelectRegion(value, '0000000000');
+                    this.props.dpUpdateMapcode(value, nullCode, 2, null);
                     this.setState({
                         // Area
                         // selected value
-                        districtValue: value, villageValue: "",
                         villageDisplay: "initial",
                         // options list
-                        village: data, LAWD_CD: null,
-
-                        // Result
-                        pageNo: 1, pageNoDisplay: "none",
-                        totalCount: 1, totalPage: 1
+                        village: data,
                     });
                 }
                 else {
-                    this.props.dpSelectRegion(value.slice(0, 2) + '0'.repeat(8), value);
+                    this.props.dpUpdateMapcode(value.slice(0, 2) + '0'.repeat(8), value, 3, value.slice(0, 5));
                     this.setState({
                         // Area
                         // selected value
-                        districtValue: value, villageValue: "",
                         villageDisplay: "none",
                         // options list
-                        village: data, LAWD_CD: value.slice(0, 5),
-
-                        // Result
-                        pageNo: 1, pageNoDisplay: "none",
-                        totalCount: 1, totalPage: 1
+                        village: data,
                     });
                 }
             });
@@ -102,83 +73,24 @@ export default class RegionSelect extends React.Component {
         clog('hVillageSelected', evt.target.value);
         let value = evt.target.value;
         if (value) {
-            this.props.dpSelectRegion(value.slice(0, 4) + '0'.repeat(6), value);
-            this.setState({
-                // Area
-                // selected value
-                villageValue: value,
-                // options list
-                LAWD_CD: value.slice(0, 5),
-
-                // Result
-                pageNo: 1, pageNoDisplay: "none",
-                totalCount: 1, totalPage: 1
-            });
+            this.props.dpUpdateMapcode(value.slice(0, 4) + '0'.repeat(6), value, 4, value.slice(0, 5));
         }
-    }
-
-    hMonthChange(evt) {
-        clog("hMonthChange");
-        let date = new Date(evt.target.value);
-        let month = ("0" + (date.getMonth() + 1)).slice(-2);
-        this.setState({
-            // Date
-            DEAL_YMD: date.getFullYear() + month,
-
-            // Result
-            pageNo: 1, pageNoDisplay: "none",
-            totalCount: 1, totalPage: 1
-        });
-    }
-
-    // componentDidMount() { }
-    // www.code.go.kr
-    hClickLoad(evt) {
-        clog('hClickLoad');
-        if (!this.state.LAWD_CD || !this.state.DEAL_YMD) return;
-        let LAWD_CD = this.state.LAWD_CD;
-        let DEAL_YMD = this.state.DEAL_YMD;
-        fetch(`/data/${LAWD_CD}/${DEAL_YMD}/${this.state.pageNo}/${this.state.numOfRows}`).then((response) => {
-            // clog(response); // header
-            return response.json();
-        }).then((data) => {
-            let jsonData = JSON.parse(data);
-            let totalCount = jsonData.response.body.totalCount;
-            let totalPage = Math.ceil(totalCount / this.state.numOfRows);
-            clog("numOfRows", jsonData.response.body.numOfRows);
-            clog("pageNo", jsonData.response.body.pageNo);
-            clog("totalCount", jsonData.response.body.totalCount);
-            clog("totalPage", totalPage);
-            this.props.dpShowItems(jsonData);
-            this.setState({ pageNoDisplay: "initial", totalCount, totalPage });
-        });
-    }
-
-    hClickClear(evt) {
-        clog('hClickClear');
-        this.props.dpShowItems(null);
-    }
-
-    hPageChange(evt) {
-        clog('hPageChange', evt.target.value);
-        this.setState({ pageNo: evt.target.value });
     }
 
     render() {
         clog("render");
+        // clog("this.props.villageCode", this.props.villageCode);
+
+        // this.state.districtDisplay
+        // this.state.villageDisplay
         return (
             <React.Fragment>
-                <SelectArea value={this.state.provinceValue} options={this.props.province}
+                <SelectArea value={this.props.provinceCode} options={this.props.province}
                     onSelected={this.hProvinceSelected} />
-                <SelectArea value={this.state.districtValue} options={this.state.district}
-                    onSelected={this.hDistrictSelected} display={this.state.districtDisplay} />
-                <SelectArea value={this.state.villageValue} options={this.state.village}
-                    onSelected={this.hVillageSelected} display={this.state.villageDisplay} />
-                <input type="month" onChange={this.hMonthChange} />
-                <input style={{ display: this.state.pageNoDisplay }} type="number" min="1"
-                    max={this.state.totalPage} value={this.state.pageNo} onChange={this.hPageChange} />
-                <button onClick={this.hClickLoad}>Load</button>
-                <button onClick={this.hClickClear}>Clear</button>
+                <SelectArea value={this.props.districtCode} options={this.state.district}
+                    onSelected={this.hDistrictSelected} display={"initial"} />
+                <SelectArea value={this.props.villageCode} options={this.state.village}
+                    onSelected={this.hVillageSelected} display={"initial"} />
             </React.Fragment>
         );
     }
@@ -187,7 +99,7 @@ export default class RegionSelect extends React.Component {
 class SelectArea extends React.Component {
     render() {
         let optionTags = [];
-        optionTags.push(<option key={0} value={""}>선택</option>);
+        optionTags.push(<option key={0} value={nullCode}>선택</option>);
         if (this.props.options) {
             this.props.options.forEach((v, i) => {
                 optionTags.push(<option key={i + 1} value={v[0]}>{v[v.length - 1]}</option>);

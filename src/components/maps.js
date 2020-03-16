@@ -72,6 +72,7 @@ export default class Maps extends React.Component {
             .attr("width", that.width)
             .attr("height", that.height);
 
+        clog('rmap.scale rmap.scale rmap.scale', rmap.scale);
         that.projection = d3.geoMercator().center([rmap.lon, rmap.lat])
             .scale(rmap.scale).rotate([0, 0])
             .translate([that.width / 2, that.height / 2]);
@@ -80,6 +81,7 @@ export default class Maps extends React.Component {
         // let projection = d3.geoAlbersUsa();
         that.path = d3.geoPath().projection(that.projection);
 
+        clog('rmap.scale rmap.scale rmap.scale', rmap.url);
         d3.json(rmap.url).then(json => {
             // clog(json);
             that.svg.selectAll("path")
@@ -91,17 +93,21 @@ export default class Maps extends React.Component {
                 })
                 .on("click", function (d, index) {
                     clog(d.properties[rmap.prop_num]);
+                    let dpSend = false;
                     if ($(this).hasClass("selected")) { // 2nd click
                         let rcode = fullCode(d.properties[rmap.prop_num]);
                         if (code2map.hasOwnProperty(rcode)) {
                             // reset();
                             // that.showMap(code2map[d.properties[rmap.prop_num]]);
                             // that.setState({ mapCode: rcode, set: true });
-                            that.props.dpSelectRegion(rcode, null);
+                            that.props.dpUpdateMapcode(rcode, null, null);
+                            dpSend = true;
                         }
                     }
-                    let rcode = fullCode(d.properties[rmap.prop_num]);
-                    that.props.dpSelectRegion(that.state.mapCode, rcode);
+                    if (!dpSend) {
+                        let rcode = fullCode(d.properties[rmap.prop_num]);
+                        that.props.dpUpdateMapcode(that.state.mapCode, rcode, null);
+                    }
                     // that.svg.selectAll("path").classed("selected", d2 => d == d2);
                     // that.svg.selectAll("text").classed("selected", d2 => d == d2);
                 })

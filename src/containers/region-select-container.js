@@ -7,15 +7,27 @@ const clog = console.log;
 const mapStateToProps = (state, ownProps) => {
     clog('mapStateToProps', ownProps);
     return {
-        province: ownProps.province
+        province: ownProps.province,
+        provinceCode: state.provinceCode,
+        districtCode: state.districtCode,
+        villageCode: state.villageCode,
+
+        LAWD_CD: state.LAWD_CD,
+        DEAL_YMD: state.DEAL_YMD
     };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     clog('mapDispatchToProps', ownProps);
     return {
-        dpShowItems: (itemListData) => dispatch(actions.showItems(itemListData)),
-        dpSelectRegion: (mapCode, regCode) => dispatch(actions.selectRegion(mapCode, regCode))
+        // dpUpdateItemList: (itemListData) => {
+        //     clog('dpUpdateItemList');
+        //     return dispatch(actions.updateItemList(itemListData));
+        // },
+        dpUpdateMapcode: (mapCode, regCode, depth, LAWD_CD) => {
+            clog('dpUpdateMapcode');
+            return dispatch(actions.updateMapcode(mapCode, regCode, depth, LAWD_CD));
+        }
     };
 }
 

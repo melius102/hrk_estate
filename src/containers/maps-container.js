@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 const clog = console.log;
 
 const mapStateToProps = (state) => {
-    clog('mapStateToProps', state);
+    clog('mapcontainer mapStateToProps', state);
     return {
         mapCode: state.mapCode,
         regCode: state.regCode
@@ -13,9 +13,16 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-    clog('mapDispatchToProps', ownProps);
+    clog('mapcontainer mapDispatchToProps', ownProps);
     return {
-        dpSelectRegion: (mapCode, regCode) => dispatch(actions.selectRegion(mapCode, regCode))
+        // dpUpdateMapcode: (mapCode, regCode, depth) => {
+        //     clog('dpUpdateMapcode');
+        //     return dispatch(actions.updateMapcode(mapCode, regCode, depth));
+        // }
+        dpUpdateMapcode: (mapCode, regCode, depth) => {
+            clog('dpUpdateMapcode');
+            return dispatch(actions.updateMapcodeAsync(mapCode, regCode, depth));
+        }
     };
 }
 

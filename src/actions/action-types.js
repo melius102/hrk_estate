@@ -1,2 +1,4 @@
-export const SELREGION = 'SELREGION';
-export const SHOWITEMS = 'SHOWITEMS';
+export const UPDATE_MAPCODE = 'UPDATE_MAPCODE';
+export const UPDATE_DATE = 'UPDATE_DATE';
+export const PAGE_CHANGE = "PAGE_CHANGE";
+export const UPDATE_ITEM_LIST = 'UPDATE_ITEM_LIST';
