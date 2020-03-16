@@ -1,6 +1,5 @@
 import React from 'react';
-
-import { getList, nullCode } from '../lib/util';
+import { nullCode } from '../lib/util';
 
 const clog = console.log;
 
@@ -20,7 +19,7 @@ export default class RegionSelect extends React.Component {
         clog('hProvinceSelected', evt.target.value);
         let selectedCode = evt.target.value;
         if (selectedCode) {
-            this.props.dpProvinceSelected(selectedCode);
+            this.props.dpOptionSelected(selectedCode, 'seq2');
         }
     }
 
@@ -28,7 +27,7 @@ export default class RegionSelect extends React.Component {
         clog('hDistrictSelected', evt.target.value);
         let selectedCode = evt.target.value;
         if (selectedCode) {
-            this.props.dpDistrictSelected(selectedCode);
+            this.props.dpOptionSelected(selectedCode, 'seq4');
         }
     }
 
@@ -36,7 +35,7 @@ export default class RegionSelect extends React.Component {
         clog('hVillageSelected', evt.target.value);
         let selectedCode = evt.target.value;
         if (selectedCode) {
-            this.props.dpUpdateMapcode(selectedCode.slice(0, 4) + '0'.repeat(6), selectedCode, 4, selectedCode.slice(0, 5));
+            this.props.dpOptionSelected(selectedCode, 'seq6');
         }
     }
 

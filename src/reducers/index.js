@@ -1,5 +1,5 @@
 import * as types from '../actions/action-types';
-import { nullCode } from '../lib/util';
+import { initCode, nullCode } from '../lib/util';
 
 const clog = console.log;
 
@@ -22,7 +22,7 @@ const initialState = {
     totalCount: 1,
 
     // map
-    mapCode: nullCode,
+    mapCode: initCode,
     regCode: nullCode,
 
     // item list
@@ -51,24 +51,24 @@ function regionSelector(state = initialState, action) {
 
     newState.mapCode = state.mapCode;
     newState.regCode = state.regCode;
+
     newState.itemListData = state.itemListData;
 
     switch (action.type) {
         case types.UPDATE_MAPCODE:
-
-            clog("action.depth", action.depth);
-            if (action.depth == 1) {
+            clog("action.sequ", action.sequ);
+            if (action.sequ == 'seq2') {
                 newState.provinceCode = action.mapCode;
                 newState.districtCode = nullCode;
                 newState.villageCode = nullCode;
-            } else if (action.depth == 2) { // more detail
-                newState.districtCode = action.mapCode;
-                newState.villageCode = nullCode;
-            } else if (action.depth == 3) {
+            } else if (action.sequ == 'seq4') { // final
                 newState.provinceCode = action.mapCode;
                 newState.districtCode = action.regCode;
                 newState.villageCode = nullCode;
-            } else if (action.depth == 4) {
+            } else if (action.sequ == 'seq5') { // more detail
+                newState.districtCode = action.mapCode;
+                newState.villageCode = nullCode;
+            } else if (action.sequ == 'seq6') { // final
                 newState.districtCode = action.mapCode;
                 newState.villageCode = action.regCode;
             }
@@ -77,7 +77,6 @@ function regionSelector(state = initialState, action) {
             if (action.regCode) newState.regCode = action.regCode;
 
             newState.LAWD_CD = action.LAWD_CD;
-
             return newState;
 
         case types.UPDATE_OPTIONS:
@@ -86,7 +85,7 @@ function regionSelector(state = initialState, action) {
             return newState;
 
         case types.UPDATE_DATE:
-            if (action.DEAL_YMD) newState.DEAL_YMD = action.DEAL_YMD;
+            newState.DEAL_YMD = action.DEAL_YMD;
             return newState;
 
         case types.PAGE_CHANGE:
@@ -94,12 +93,9 @@ function regionSelector(state = initialState, action) {
             return newState;
 
         case types.UPDATE_ITEM_LIST:
-            // return {
-            //     itemListData: action.itemListData
-            // };
-
             newState.itemListData = action.itemListData;
             return newState;
+
         default:
             return newState;
     }

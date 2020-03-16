@@ -1,8 +1,7 @@
 import React from 'react';
-
-import '../scss/maps.scss';
-
+import { nullCode } from '../lib/util';
 import { code2map } from '../lib/geo-json-list';
+import '../scss/maps.scss';
 
 const clog = console.log;
 
@@ -10,9 +9,9 @@ export default class Maps extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            set: true,
-            mapCode: null,
-            regCode: null
+            refresh: true,
+            mapCode: nullCode,
+            regCode: nullCode
         };
 
         this.svg = null;
@@ -26,14 +25,15 @@ export default class Maps extends React.Component {
 
     static getDerivedStateFromProps(props, state) {
         clog("getDerivedStateFromProps");
+        clog(state.mapCode, props.mapCode);
         if (state.mapCode == props.mapCode) {
             return {
-                set: false,
+                refresh: false,
                 regCode: props.regCode
             }
         } else {
             return {
-                set: true,
+                refresh: true,
                 mapCode: props.mapCode,
                 regCode: props.regCode
             }
@@ -61,9 +61,12 @@ export default class Maps extends React.Component {
     showMap(rmap, regin) {
         clog('showMap', rmap, regin);
         let that = this;
-        if (!that.state.set) {
+        if (!that.state.refresh) {
             clog(that.state.regCode);
-            that.svg.selectAll("path").classed("selected", d => fullCode(d.properties[rmap.prop_num]) == that.state.regCode);
+            that.svg.selectAll("path")
+                .classed("selected", d => {
+                    return fullCode(d.properties[rmap.prop_num]) == that.state.regCode;
+                });
             return;
         }
 
@@ -99,14 +102,13 @@ export default class Maps extends React.Component {
                         if (code2map.hasOwnProperty(rcode)) {
                             // reset();
                             // that.showMap(code2map[d.properties[rmap.prop_num]]);
-                            // that.setState({ mapCode: rcode, set: true });
-                            that.props.dpUpdateMapcode(rcode, null, null);
+                            that.props.dpMapRegionSelected(rcode, nullCode, false);
                             dpSend = true;
                         }
                     }
                     if (!dpSend) {
                         let rcode = fullCode(d.properties[rmap.prop_num]);
-                        that.props.dpUpdateMapcode(that.state.mapCode, rcode, null);
+                        that.props.dpMapRegionSelected(that.state.mapCode, rcode, !code2map.hasOwnProperty(rcode));
                     }
                     // that.svg.selectAll("path").classed("selected", d2 => d == d2);
                     // that.svg.selectAll("text").classed("selected", d2 => d == d2);

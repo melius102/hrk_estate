@@ -13,15 +13,10 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-    clog('mapcontainer mapDispatchToProps', ownProps);
+    clog('mapcontainer mapDispatchToProps');
     return {
-        // dpUpdateMapcode: (mapCode, regCode, depth) => {
-        //     clog('dpUpdateMapcode');
-        //     return dispatch(actions.updateMapcode(mapCode, regCode, depth));
-        // }
-        dpUpdateMapcode: (mapCode, regCode, depth) => {
-            clog('dpUpdateMapcode');
-            return dispatch(actions.updateMapcodeAsync(mapCode, regCode, depth));
+        dpMapRegionSelected: (mapCode, regCode, final) => {
+            return dispatch(actions.interfaceIntegrate({ mapCode, regCode, final }, {}));
         }
     };
 }

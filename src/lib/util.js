@@ -5,6 +5,7 @@ async function getList(depth, code) {
     return data;
 }
 
-const nullCode = '0000000000';
+const initCode = '0000000000';
+const nullCode = '';
 
-export { getList, nullCode };
+export { getList, initCode, nullCode };

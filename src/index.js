@@ -8,7 +8,7 @@ import ReduxThunk from 'redux-thunk';
 import 'normalize.css';
 import './scss/style.scss';
 
-import { getList, nullCode } from './lib/util';
+import { getList, initCode } from './lib/util';
 import App from './containers/app-cont';
 import reducers from './reducers';
 import tmpMiddleware from './lib/tmp-middleware';
@@ -21,7 +21,7 @@ const enhancer = applyMiddleware(ReduxThunk);
 const store = createStore(reducers, enhancer);
 
 window.onload = () => {
-    getList(1, nullCode).then(data => {
+    getList(1, initCode).then(data => {
         ReactDOM.render(<Provider store={store}>
             <App provinceOptions={data} />
         </Provider>, document.getElementById("root"));
