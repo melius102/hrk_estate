@@ -1,5 +1,5 @@
 import React from 'react';
-import { nullCode } from '../lib/util';
+import { initCode, nullCode } from '../lib/util';
 import { code2map } from '../lib/geo-json-list';
 import '../scss/maps.scss';
 
@@ -24,8 +24,6 @@ export default class Maps extends React.Component {
     }
 
     static getDerivedStateFromProps(props, state) {
-        clog("getDerivedStateFromProps");
-        clog(state.mapCode, props.mapCode);
         if (state.mapCode == props.mapCode) {
             return {
                 refresh: false,
@@ -40,10 +38,25 @@ export default class Maps extends React.Component {
         }
     }
 
+    hClick(evt) {
+        if (this.props.regCode) this.props.dpMapRegionSelected(this.props.mapCode, nullCode, false);
+        else {
+            const regex1 = /[1-9]{2}0{8}/; // province
+            const regex2 = /[1-9]{2}[0-9]{2}0{6}/; // district
+
+            let rcode = initCode;
+            if (regex1.test(this.props.mapCode)) rcode = initCode;
+            else if (regex2.test(this.props.mapCode)) rcode = this.props.mapCode.slice(0, 2) + '0'.repeat(8);
+
+            this.props.dpMapRegionSelected(rcode, nullCode, false);
+        }
+    }
+
     render() {
         return (
             <div id="maps">
                 <div id="rname"></div>
+                <button onClick={(evt) => { this.hClick(evt); }}>BACK</button>
             </div>
         );
     }

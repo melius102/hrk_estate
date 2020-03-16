@@ -10,44 +10,35 @@ export default class RegionSelect extends React.Component {
         this.state = {
             districtDisplay: "initial", villageDisplay: "initial",
         };
-        this.hProvinceSelected = this.hProvinceSelected.bind(this);
-        this.hDistrictSelected = this.hDistrictSelected.bind(this);
-        this.hVillageSelected = this.hVillageSelected.bind(this);
     }
 
-    hProvinceSelected(evt) {
-        clog('hProvinceSelected', evt.target.value);
-        let selectedCode = evt.target.value;
-        if (selectedCode) {
-            this.props.dpOptionSelected(selectedCode, 'seq2');
-        }
+    static getDerivedStateFromProps(props, state) {
+        let newState = {}
+        newState.districtDisplay = state.districtDisplay;
+        newState.villageDisplay = state.villageDisplay;
+
+        if (props.districtOptions) newState.districtDisplay = "initial";
+        else newState.districtDisplay = "none";
+
+        if (props.villageOptions) newState.villageDisplay = "initial";
+        else newState.villageDisplay = "none";
+
+        return newState;
     }
 
-    hDistrictSelected(evt) {
-        clog('hDistrictSelected', evt.target.value);
-        let selectedCode = evt.target.value;
-        if (selectedCode) {
-            this.props.dpOptionSelected(selectedCode, 'seq4');
-        }
-    }
-
-    hVillageSelected(evt) {
-        clog('hVillageSelected', evt.target.value);
-        let selectedCode = evt.target.value;
-        if (selectedCode) {
-            this.props.dpOptionSelected(selectedCode, 'seq6');
-        }
+    hSelected(evt, seq) {
+        this.props.dpOptionSelected(evt.target.value, seq);
     }
 
     render() {
         return (
             <React.Fragment>
                 <SelectArea value={this.props.provinceCode} options={this.props.provinceOptions}
-                    onSelected={this.hProvinceSelected} />
+                    onSelected={(evt) => { this.hSelected(evt, 'seq2'); }} />
                 <SelectArea value={this.props.districtCode} options={this.props.districtOptions}
-                    onSelected={this.hDistrictSelected} display={this.state.districtDisplay} />
+                    onSelected={(evt) => { this.hSelected(evt, 'seq4'); }} display={this.state.districtDisplay} />
                 <SelectArea value={this.props.villageCode} options={this.props.villageOptions}
-                    onSelected={this.hVillageSelected} display={this.state.villageDisplay} />
+                    onSelected={(evt) => { this.hSelected(evt, 'seq6'); }} display={this.state.villageDisplay} />
             </React.Fragment>
         );
     }

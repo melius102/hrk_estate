@@ -9,6 +9,7 @@ export const interfaceIntegrate = ({ mapCode, regCode, final }, { selectedCode, 
     let seqCode = null;
     if (mapCode) { // map interface
 
+        const regex0 = /0{10}/; // initCode
         const regex1 = /[1-9]{2}0{8}/; // province
         const regex2 = /[1-9]{2}[0-9]{2}0{6}/; // district
         const regex3 = /[1-9]{2}[0-9]{3}0{5}/; // village
@@ -23,19 +24,29 @@ export const interfaceIntegrate = ({ mapCode, regCode, final }, { selectedCode, 
             else if (regex3.test(seqCode)) sequence = 'seq6'; // 6 village select final
         } else {
             seqCode = mapCode;
-            if (regex1.test(seqCode)) sequence = 'seq2'; // 2 province show map
+            if (regex0.test(seqCode)) sequence = 'seq0'; // 0 init show map
+            else if (regex1.test(seqCode)) sequence = 'seq2'; // 2 province show map
             else if (regex2.test(seqCode)) sequence = 'seq5'; // 5 district show map
         }
     } else { // select interface
         if (seq == 'seq2' || seq == 'seq4' || seq == 'seq6') {
-            seqCode = selectedCode;
-            sequence = seq;
+            if (selectedCode) {
+                seqCode = selectedCode;
+                sequence = seq;
+            } else { // selection cancel
+                if (seq == 'seq2') sequence = 'can2';
+                else if (seq == 'seq4') sequence = 'can4';
+                else if (seq == 'seq6') sequence = 'can6';
+            }
         }
     }
 
     // selection sequence
-    let { districtOptions } = getState();
-    if (sequence == 'seq1' || sequence == 'seq3') {
+    let { districtOptions, villageOptions } = getState();
+    if (sequence == 'seq0') {
+        dispatch(updateMapcode(mapCode, nullCode, 'seq0', null));
+        dispatch(updateOptions(null, null));
+    } else if (sequence == 'seq1' || sequence == 'seq3') {
         dispatch(updateMapcode(mapCode, regCode, 'seq1', null));
     } else if (sequence == 'seq2') {
         getList(2, seqCode).then(data => {
@@ -48,14 +59,27 @@ export const interfaceIntegrate = ({ mapCode, regCode, final }, { selectedCode, 
             let moreDetail = res.length != 0;
             if (!moreDetail) { // final
                 dispatch(updateMapcode(seqCode.slice(0, 2) + '0'.repeat(8), seqCode, 'seq4', seqCode.slice(0, 5)));
+                dispatch(updateOptions(districtOptions, null));
             }
             else {
                 dispatch(updateMapcode(seqCode, nullCode, 'seq5', null));
+                dispatch(updateOptions(districtOptions, data));
             }
-            dispatch(updateOptions(districtOptions, data));
         });
     } else if (sequence == 'seq6') { // final
         dispatch(updateMapcode(seqCode.slice(0, 4) + '0'.repeat(6), seqCode, 'seq6', seqCode.slice(0, 5)));
+    }
+
+    // selection cancel
+    if (sequence == 'can2') {
+        dispatch(updateMapcode(null, null, 'can2', null));
+        dispatch(updateOptions(null, null));
+    } else if (sequence == 'can4') {
+        dispatch(updateMapcode(null, null, 'can4', null));
+        dispatch(updateOptions(districtOptions, null));
+    } else if (sequence == 'can6') {
+        dispatch(updateMapcode(null, null, 'can6', null));
+        dispatch(updateOptions(districtOptions, villageOptions));
     }
 }
 

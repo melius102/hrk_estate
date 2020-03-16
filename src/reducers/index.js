@@ -57,7 +57,11 @@ function regionSelector(state = initialState, action) {
     switch (action.type) {
         case types.UPDATE_MAPCODE:
             clog("action.sequ", action.sequ);
-            if (action.sequ == 'seq2') {
+            if (action.sequ == 'seq0') {
+                newState.provinceCode = nullCode;
+                newState.districtCode = nullCode;
+                newState.villageCode = nullCode;
+            } else if (action.sequ == 'seq2') {
                 newState.provinceCode = action.mapCode;
                 newState.districtCode = nullCode;
                 newState.villageCode = nullCode;
@@ -73,8 +77,25 @@ function regionSelector(state = initialState, action) {
                 newState.villageCode = action.regCode;
             }
 
-            if (action.mapCode) newState.mapCode = action.mapCode;
-            if (action.regCode) newState.regCode = action.regCode;
+            if (/seq\d{1}/.test(action.sequ)) {
+                newState.mapCode = action.mapCode;
+                newState.regCode = action.regCode;
+            }
+
+            // cancel
+            if (action.sequ == 'can2') {
+                newState.provinceCode = nullCode;
+                newState.districtCode = nullCode;
+                newState.mapCode = initCode;
+            } else if (action.sequ == 'can4') {
+                newState.districtCode = nullCode;
+                newState.mapCode = newState.mapCode.slice(0, 2) + '0'.repeat(8);
+            }
+
+            if (/can\d{1}/.test(action.sequ)) {
+                newState.villageCode = nullCode;
+                newState.regCode = nullCode;
+            }
 
             newState.LAWD_CD = action.LAWD_CD;
             return newState;
