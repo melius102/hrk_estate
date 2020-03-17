@@ -17,8 +17,8 @@ export default class Maps extends React.Component {
         this.svg = null;
         this.projection = null;
         this.path = null;
-        this.width = 500;
-        this.height = 500;
+        // this.width = 500;
+        // this.height = 500;
 
         this.showMap = this.showMap.bind(this);
     }
@@ -56,7 +56,7 @@ export default class Maps extends React.Component {
         return (
             <div id="maps">
                 <div id="rname"></div>
-                <button onClick={(evt) => { this.hClick(evt); }}>BACK</button>
+                <div id="back-btn" onClick={(evt) => { this.hClick(evt); }}><i className="fas fa-undo"></i></div>
             </div>
         );
     }
@@ -83,12 +83,14 @@ export default class Maps extends React.Component {
             return;
         }
 
+        that.width = $("#maps").width();
+        that.height = $("#maps").height();
+
         reset();
         that.svg = d3.select('#maps').append('svg')
             .attr("width", that.width)
             .attr("height", that.height);
 
-        clog('rmap.scale rmap.scale rmap.scale', rmap.scale);
         that.projection = d3.geoMercator().center([rmap.lon, rmap.lat])
             .scale(rmap.scale).rotate([0, 0])
             .translate([that.width / 2, that.height / 2]);
@@ -134,12 +136,12 @@ export default class Maps extends React.Component {
                     // clog(this, event == d3.event);
                     // clog(event.clientY + 'px', event.clientX + 'px');
                     $("#rname").css({
-                        top: event.clientY - 30 + 'px',
-                        left: event.clientX + 'px'
+                        top: event.offsetY - 30 + 'px', // clientY
+                        left: event.offsetX + 'px' // clientX
                     }).text(d.properties[rmap.prop_name]);
-                })
-                .append("title")
-                .text(d => d.properties[rmap.prop_name]);
+                });
+            // .append("title")
+            // .text(d => d.properties[rmap.prop_name]);
 
             that.svg.selectAll("text")
                 .data(json.features)
@@ -157,5 +159,17 @@ export default class Maps extends React.Component {
         function fullCode(code) {
             return code + '0'.repeat(10 - code.length);
         }
-    }
+
+        d3.select(window)
+            .on("resize", (evt) => {
+                that.width = $("#maps").width();
+                that.height = $("#maps").height();
+
+                that.projection.translate([that.width / 2, that.height / 2]);
+                // that.projection.scale(rmap.scale)
+                //     .translate([that.width / 2, that.height / 2]);
+                that.svg.selectAll("path")
+                    .attr("d", that.path);
+            });
+    } // end of showMap
 }

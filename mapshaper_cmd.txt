@@ -9,3 +9,9 @@ each 'SIG_CD="41170"' where='SIG_CD=="41171" || SIG_CD=="41173"'
 each 'SIG_CD="41270"' where='SIG_CD=="41271" || SIG_CD=="41273"'
 each 'SIG_CD="41280"' where='SIG_CD=="41281" || SIG_CD=="41285" || SIG_CD=="41287"'
 each 'SIG_CD="41460"' where='SIG_CD=="41461" || SIG_CD=="41463" || SIG_CD=="41465"'
+
+코드규칙 예외지역
+서울
+- 광진구 1121500000
+- 강북구 1130500000
+- 금천구 1154500000

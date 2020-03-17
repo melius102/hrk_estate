@@ -7,21 +7,95 @@ h1,
 h2,
 h3,
 p,
+i,
 svg,
 input,
 button,
+select,
+option,
 table,
 thead,
 tbody,
 tr,
 td {
-    margin: 0;
-    padding: 0;
-    border: 1px solid red;
-    box-sizing: border-box;
-    font-family: 'Roboto', 'Nanum Myeongjo', 'Nanum Gothic', serif;
+  margin: 0;
+  padding: 0;
+  border: 1px solid red;
+  box-sizing: border-box;
+  font-family: 'Roboto', 'Nanum Myeongjo', 'Nanum Gothic', serif;
+}
+
+.rdev {
+  border: 0;
+}
+
+#root {
+  @extend .rdev;
+  min-height: 100.1vh;
 }
 
 table {
-    margin-top: 30px;
+  margin-top: 30px;
+}
+
+$main-color: grey;
+$sub-color: white;
+
+#title {
+  text-align: center;
+  margin: 40px 0 10px;
+  font-size: 25px;
+  @extend .rdev;
+}
+
+.input-design {
+  font-size: 18px;
+  text-align-last: center;
+  background-color: white;
+  border-bottom: 1px solid $main-color;
+}
+
+#region-select {
+  margin: 10px 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  @extend .rdev;
+
+  select {
+    margin: 5px 10px;
+    display: block;
+    -webkit-appearance: none;
+    border-radius: 0px;
+    min-width: 150px;
+    @extend .input-design;
+    @extend .rdev;
+  }
+}
+
+#date-picker {
+  margin: 10px 0;
+  display: flex;
+  justify-content: center;
+  @extend .rdev;
+
+  input {
+    @extend .input-design;
+    @extend .rdev;
+  }
+}
+
+#control-btns {
+  margin: 20px 0;
+  text-align: center;
+  @extend .rdev;
+
+  button {
+    background-color: $main-color;
+    color: white;
+    height: 40px;
+    width: 200px;
+    border-right: 0.2px solid white;
+    @extend .rdev;
+  }
 }

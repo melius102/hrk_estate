@@ -31,8 +31,8 @@ const initialState = {
 
 function regionSelector(state = initialState, action) {
     clog('reducer');
-    clog('state', state);
-    clog('action', action);
+    // clog('state', state);
+    // clog('action', action);
     let newState = {};
 
     newState.provinceCode = state.provinceCode;

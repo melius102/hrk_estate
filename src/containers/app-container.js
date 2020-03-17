@@ -15,6 +15,7 @@ export default class App extends React.Component {
     render() {
         return (
             <React.Fragment>
+                <h1 id="title">아파트 매매 실거래가 정보 (수도권)</h1>
                 <MapsContainer />
                 <RegionSelectContainer provinceOptions={this.props.provinceOptions} />
                 <DateSelectContainer />

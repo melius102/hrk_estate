@@ -8,7 +8,7 @@ export default class RegionSelect extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            districtDisplay: "initial", villageDisplay: "initial",
+            districtDisplay: "block", villageDisplay: "block",
         };
     }
 
@@ -17,10 +17,10 @@ export default class RegionSelect extends React.Component {
         newState.districtDisplay = state.districtDisplay;
         newState.villageDisplay = state.villageDisplay;
 
-        if (props.districtOptions) newState.districtDisplay = "initial";
+        if (props.districtOptions) newState.districtDisplay = "block";
         else newState.districtDisplay = "none";
 
-        if (props.villageOptions) newState.villageDisplay = "initial";
+        if (props.villageOptions) newState.villageDisplay = "block";
         else newState.villageDisplay = "none";
 
         return newState;
@@ -32,14 +32,14 @@ export default class RegionSelect extends React.Component {
 
     render() {
         return (
-            <React.Fragment>
+            <div id="region-select">
                 <SelectArea value={this.props.provinceCode} options={this.props.provinceOptions}
                     onSelected={(evt) => { this.hSelected(evt, 'seq2'); }} />
                 <SelectArea value={this.props.districtCode} options={this.props.districtOptions}
                     onSelected={(evt) => { this.hSelected(evt, 'seq4'); }} display={this.state.districtDisplay} />
                 <SelectArea value={this.props.villageCode} options={this.props.villageOptions}
                     onSelected={(evt) => { this.hSelected(evt, 'seq6'); }} display={this.state.villageDisplay} />
-            </React.Fragment>
+            </div>
         );
     }
 }

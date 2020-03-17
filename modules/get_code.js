@@ -1,5 +1,9 @@
-const log = console.log;
+const clog = console.log;
 const fs = require('fs'); // https://nodejs.org/api/fs.html
+
+// Exceptional Code
+const seoul = '1100000000';
+const districtCodes = ['1121500000', '1130500000', '1154500000'];
 
 /*
 const path = "./modules/data/district_code_capital_area.txt";
@@ -109,6 +113,10 @@ function getList(depth, code) {
         let code2 = code.slice(0, 2);
         let regex = new RegExp(`^${code2}\\d{1,}0{6}$`);
         list = codeArr.filter(v => regex.test(v[0]) && v.length == 3);
+        if (code == seoul) { // for exceptional code
+            list = [...list, ...codeArr.filter(v => districtCodes.includes(v[0]))]; // Spread syntax
+            list.sort((a, b) => a[0] - b[0]);
+        }
     } else if (depth == 3) {
         let code2 = code.slice(0, 4);
         let regex = new RegExp(`^${code2}\\d{1,}$`);

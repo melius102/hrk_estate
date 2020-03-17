@@ -51,10 +51,12 @@ export default class ResultLoad extends React.Component {
     render() {
         return (
             <React.Fragment>
+                <div id="control-btns">
+                    <button id="search-btn" onClick={this.hClickLoad}>검색</button>
+                    <button id="clear-btn" onClick={this.hClickClear}>지우기</button>
+                </div>
                 <input style={{ display: this.state.pageNoDisplay }} type="number" min="1"
                     max={this.state.totalPage} value={this.props.pageNo} onChange={this.hPageChange} />
-                <button onClick={this.hClickLoad}>Load</button>
-                <button onClick={this.hClickClear}>Clear</button>
             </React.Fragment>
         );
     }

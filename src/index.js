@@ -9,7 +9,7 @@ import 'normalize.css';
 import './scss/style.scss';
 
 import { getList, initCode } from './lib/util';
-import App from './containers/app-cont';
+import App from './containers/app-container';
 import reducers from './reducers';
 import tmpMiddleware from './lib/tmp-middleware';
 

@@ -1,5 +1,5 @@
 import * as types from './action-types';
-import { getList, nullCode } from '../lib/util';
+import { getList, nullCode, districtCodes, seoulCode } from '../lib/util';
 
 const clog = console.log;
 
@@ -17,7 +17,7 @@ export const interfaceIntegrate = ({ mapCode, regCode, final }, { selectedCode, 
         if (regCode) {
             seqCode = regCode;
             if (regex1.test(seqCode)) sequence = 'seq1'; // 1 province select
-            else if (regex2.test(seqCode)) {
+            else if (regex2.test(seqCode) || districtCodes.includes(regCode)) { // for exceptional code
                 if (final) sequence = 'seq4'; // 4 district select final
                 else sequence = 'seq3'; // 3 district select
             }

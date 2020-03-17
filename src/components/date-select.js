@@ -16,10 +16,14 @@ export default class DateSelect extends React.Component {
     }
 
     render() {
+        let date = new Date();
+        let month = ("0" + (date.getMonth() + 1)).slice(-2);
+        let value = `${date.getFullYear()}-${month}`;
+        clog(value);
         return (
-            <React.Fragment>
-                <input type="month" onChange={this.hMonthChange} />
-            </React.Fragment>
+            <div id="date-picker">
+                <input type="month" onChange={this.hMonthChange} defaultValue={value} />
+            </div>
         );
     }
 }
