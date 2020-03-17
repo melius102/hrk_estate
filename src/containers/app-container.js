@@ -8,19 +8,23 @@ import RegionSelectContainer from './region-select-container';
 import DateSelectContainer from './date-select-container';
 import ResultLoadContainer from './result-load-container';
 import ItemListContainer from './item-list-container';
-
-const clog = console.log;
+import PaginationContainer from './pagination-container';
+import { clog } from '../lib/util';
 
 export default class App extends React.Component {
     render() {
+        let headerText = "아파트 매매 실거래가 정보 (수도권)";
+        let footerText = "Powered by Open API of DATA.go.kr";
         return (
             <React.Fragment>
-                <h1 id="title">아파트 매매 실거래가 정보 (수도권)</h1>
+                <header><h1>{headerText}</h1></header>
                 <MapsContainer />
                 <RegionSelectContainer provinceOptions={this.props.provinceOptions} />
                 <DateSelectContainer />
                 <ResultLoadContainer />
                 <ItemListContainer />
+                <PaginationContainer />
+                <footer><p>{footerText}</p></footer>
             </React.Fragment>
         );
     }

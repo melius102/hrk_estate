@@ -1,7 +1,5 @@
 import * as types from '../actions/action-types';
-import { initCode, nullCode } from '../lib/util';
-
-const clog = console.log;
+import { initCode, nullCode, rdev, clog } from '../lib/util';
 
 const initialState = {
     // region select
@@ -18,7 +16,7 @@ const initialState = {
 
     // result load
     pageNo: 1,
-    numOfRows: 10,
+    numOfRows: 15,
     totalCount: 1,
 
     // map
@@ -28,6 +26,13 @@ const initialState = {
     // item list
     itemListData: null
 };
+
+if (rdev) {
+    initialState.mapCode = initialState.provinceCode = "4100000000";
+    initialState.regCode = initialState.districtCode = "4159000000";
+    initialState.LAWD_CD = "41590";
+    initialState.DEAL_YMD = null;
+}
 
 function regionSelector(state = initialState, action) {
     clog('reducer');
@@ -115,6 +120,8 @@ function regionSelector(state = initialState, action) {
 
         case types.UPDATE_ITEM_LIST:
             newState.itemListData = action.itemListData;
+            newState.pageNo = action.itemListData.response.body.pageNo;
+            newState.totalCount = action.itemListData.response.body.totalCount;
             return newState;
 
         default:

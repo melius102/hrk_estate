@@ -1,8 +1,7 @@
 import RegionSelect from '../components/region-select';
 import * as actions from '../actions';
 import { connect } from 'react-redux';
-
-const clog = console.log;
+import { clog } from '../lib/util';
 
 const mapStateToProps = (state, ownProps) => {
     return {

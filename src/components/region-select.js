@@ -1,7 +1,5 @@
 import React from 'react';
-import { nullCode } from '../lib/util';
-
-const clog = console.log;
+import { nullCode, clog } from '../lib/util';
 
 // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
 export default class RegionSelect extends React.Component {

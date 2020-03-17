@@ -8,12 +8,10 @@ import ReduxThunk from 'redux-thunk';
 import 'normalize.css';
 import './scss/style.scss';
 
-import { getList, initCode } from './lib/util';
+import { getList, initCode, clog } from './lib/util';
 import App from './containers/app-container';
 import reducers from './reducers';
 import tmpMiddleware from './lib/tmp-middleware';
-
-const clog = console.log;
 
 // const enhancer = window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__();
 // const enhancer = applyMiddleware(tmpMiddleware, ReduxThunk);

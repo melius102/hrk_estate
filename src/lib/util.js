@@ -12,4 +12,7 @@ const seoulCode = '1100000000';
 // Exceptional Code
 const districtCodes = ['1121500000', '1130500000', '1154500000'];
 
-export { getList, initCode, nullCode, seoulCode, districtCodes };
+const clog = console.log;
+const rdev = 0;
+
+export { getList, initCode, nullCode, seoulCode, districtCodes, rdev, clog };

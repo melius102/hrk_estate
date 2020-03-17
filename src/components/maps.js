@@ -1,9 +1,7 @@
 import React from 'react';
-import { initCode, nullCode } from '../lib/util';
+import { initCode, nullCode, clog } from '../lib/util';
 import { code2map } from '../lib/geo-json-list';
 import '../scss/maps.scss';
-
-const clog = console.log;
 
 export default class Maps extends React.Component {
     constructor(props) {

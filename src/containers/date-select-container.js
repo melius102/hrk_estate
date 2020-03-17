@@ -1,8 +1,8 @@
 import DateSelect from '../components/date-select';
 import * as actions from '../actions';
 import { connect } from 'react-redux';
+import { clog } from '../lib/util';
 
-const clog = console.log;
 
 const mapStateToProps = (state, ownProps) => {
     return {

@@ -9,6 +9,9 @@ h3,
 p,
 i,
 svg,
+span,
+header,
+footer,
 input,
 button,
 select,
@@ -34,18 +37,29 @@ td {
   min-height: 100.1vh;
 }
 
-table {
-  margin-top: 30px;
-}
-
 $main-color: grey;
 $sub-color: white;
 
-#title {
-  text-align: center;
-  margin: 40px 0 10px;
-  font-size: 25px;
+header {
   @extend .rdev;
+
+  h1 {
+    text-align: center;
+    margin: 40px 0 10px;
+    font-size: 25px;
+    @extend .rdev;
+  }
+}
+
+footer {
+  @extend .rdev;
+
+  p {
+    padding: 24px 0;
+    text-align: center;
+    color: $main-color;
+    @extend .rdev;
+  }
 }
 
 .input-design {
@@ -54,6 +68,7 @@ $sub-color: white;
   background-color: white;
   border-bottom: 1px solid $main-color;
 }
+
 
 #region-select {
   margin: 10px 0;
@@ -73,6 +88,7 @@ $sub-color: white;
   }
 }
 
+
 #date-picker {
   margin: 10px 0;
   display: flex;
@@ -84,6 +100,7 @@ $sub-color: white;
     @extend .rdev;
   }
 }
+
 
 #control-btns {
   margin: 20px 0;
@@ -97,5 +114,68 @@ $sub-color: white;
     width: 200px;
     border-right: 0.2px solid white;
     @extend .rdev;
+  }
+}
+
+
+#item-list {
+  max-width: 700px;
+  min-height: 100px;
+  margin: 0 auto;
+  @extend .rdev;
+
+  .item-title {
+    height: 30px;
+  }
+
+  .item-table-wrap {
+    display: none;
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    td {
+      border-collapse: collapse;
+      text-align: center;
+    }
+  }
+}
+
+
+#pagination {
+  $p-height: 80px;
+  $p-font-size: 20px;
+  text-align: center;
+  @extend .rdev;
+
+  div {
+    height: $p-height;
+    display: inline-block;
+    font-size: $p-font-size;
+    line-height: $p-height;
+    user-select: none;
+    @extend .rdev;
+
+    i {
+      width: 60px;
+      font-size: $p-font-size + 20px;
+      line-height: $p-height;
+      vertical-align: top;
+      text-align: center;
+      color: $main-color;
+      @extend .rdev;
+    }
+
+    i.end {
+      color: transparentize($main-color, 0.5);
+      @extend .rdev;
+    }
+
+    span {
+      font-size: $p-font-size;
+      @extend .rdev;
+    }
   }
 }

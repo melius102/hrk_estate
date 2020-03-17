@@ -1,21 +1,31 @@
 import React from 'react';
 import Item from './item';
-
-const clog = console.log;
+import { clog } from '../lib/util';
 
 export default class ItemList extends React.Component {
     render() {
-        let items = [];
-        if (this.props.itemListData) {
-            let itemData = this.props.itemListData.response.body.items.item;
+        let itemList = [];
+        let jsonData = this.props.itemListData;
+        if (jsonData) {
+            let { body } = jsonData.response;
+            let { numOfRows, pageNo, totalCount } = body;
+            let itemData = body.items.item;
+            let totalPage = Math.ceil(totalCount / numOfRows);
+            clog("jsonData", jsonData);
+            clog("numOfRows", numOfRows);
+            clog("pageNo", pageNo);
+            clog("totalCount", totalCount);
+            clog("totalPage", totalPage);
             if (itemData instanceof Array) {
-                itemData.forEach((v, i) => items.push(<Item key={i} data={v} />));
+                itemData.forEach((v, i) => {
+                    itemList.push(<Item key={i} index={(pageNo - 1) * numOfRows + i + 1} data={v} />);
+                });
             }
         }
         return (
-            <React.Fragment>
-                {items}
-            </React.Fragment>
+            <div id="item-list">
+                {itemList}
+            </div>
         );
     }
 }

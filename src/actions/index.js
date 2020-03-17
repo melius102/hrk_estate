@@ -1,7 +1,5 @@
 import * as types from './action-types';
-import { getList, nullCode, districtCodes, seoulCode } from '../lib/util';
-
-const clog = console.log;
+import { getList, nullCode, districtCodes, seoulCode, clog } from '../lib/util';
 
 // https://velopert.com/3401
 export const interfaceIntegrate = ({ mapCode, regCode, final }, { selectedCode, seq }) => (dispatch, getState) => {

@@ -1,8 +1,7 @@
 import Maps from '../components/maps';
 import * as actions from '../actions';
 import { connect } from 'react-redux';
-
-const clog = console.log;
+import { clog } from '../lib/util';
 
 const mapStateToProps = (state) => {
     clog('mapcontainer mapStateToProps', state);

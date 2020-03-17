@@ -1,19 +1,24 @@
-import ResultLoad from '../components/result-load';
+import Pagination from '../components/pagination';
 import * as actions from '../actions';
 import { connect } from 'react-redux';
-import { clog } from '../lib/util';
+import { rdev, clog } from '../lib/util';
 
 const mapStateToProps = (state, ownProps) => {
     return {
         LAWD_CD: state.LAWD_CD,
         DEAL_YMD: state.DEAL_YMD,
         pageNo: state.pageNo,
-        numOfRows: state.numOfRows
+        numOfRows: state.numOfRows,
+        totalCount: state.totalCount
     };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
+        dpPageChange: (pageNo) => {
+            clog('dpPageChange');
+            return dispatch(actions.pageChange(pageNo));
+        },
         dpUpdateItemList: (itemListData) => {
             clog('dpUpdateItemList');
             return dispatch(actions.updateItemList(itemListData));
@@ -21,8 +26,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     };
 }
 
-const ResultLoadContainer = connect(
+const PaginationContainer = connect(
     mapStateToProps, mapDispatchToProps
-)(ResultLoad);
+)(Pagination);
 
-export default ResultLoadContainer;
+export default PaginationContainer;
