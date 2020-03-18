@@ -1,67 +1,67 @@
 .rdev {
-  border: 0;
+    border: 0;
 }
 
 #maps {
-  position: relative;
-  user-select: none;
-  max-width: 600px;
-  margin: 0 auto;
-  height: 420px;
-  @extend .rdev;
-
-  $main-color: grey;
-  $sub-color: white;
-
-  svg {
-    display: block;
-    width: 100%;
-    height: 100%;
+    position: relative;
+    user-select: none;
+    max-width: 600px;
     margin: 0 auto;
-    background-color: white;
+    height: 420px;
     @extend .rdev;
 
-    path {
-      fill: transparentize($main-color, 0.4);
-      stroke: $sub-color;
-      stroke-width: 0.2px;
+    $main-color: grey;
+    $sub-color: white;
 
-      &.selected {
-        fill: $main-color;
-        stroke: white;
-      }
-    }
-
-    text {
-      fill: white;
-      display: none;
-
-      &.selected {
+    svg {
         display: block;
-      }
+        width: 100%;
+        height: 100%;
+        margin: 0 auto;
+        background-color: white;
+        @extend .rdev;
+
+        path {
+            fill: transparentize($main-color, 0.4);
+            stroke: $sub-color;
+            stroke-width: 0.2px;
+
+            &.selected {
+                fill: $main-color;
+                stroke: white;
+            }
+        }
+
+        text {
+            fill: white;
+            display: none;
+
+            &.selected {
+                display: block;
+            }
+        }
     }
-  }
 
-  #rname {
-    position: absolute;
-    background: white;
-    padding: 1px 5px;
-    // border: 0.5px solid black;
-    border: 0;
-    display: none;
-  }
-
-  #back-btn {
-    position: absolute;
-    bottom: 40px;
-    right: 40px;
-    text-align: center;
-    border: 0;
-
-    i {
-      font-size: 40px;
-      color: transparentize($main-color, 0.2);
-      border: 0;
+    #rname {
+        position: absolute;
+        background: white;
+        padding: 1px 5px;
+        // border: 0.5px solid black;
+        border: 0;
+        display: none;
     }
-  }
+
+    #back-btn {
+        position: absolute;
+        bottom: 40px;
+        right: 40px;
+        text-align: center;
+        border: 0;
+
+        i {
+            font-size: 40px;
+            color: transparentize($main-color, 0.2);
+            border: 0;
+        }
+    }
 }

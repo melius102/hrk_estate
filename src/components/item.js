@@ -4,8 +4,7 @@ import { clog } from '../lib/util';
 export default class Item extends React.Component {
 
     hClick(evt) {
-        // clog(evt.nativeEvent.target);
-        $(evt.nativeEvent.target).next().slideToggle();
+        $(evt.currentTarget).next().slideToggle();
     }
 
     render() {
@@ -17,10 +16,20 @@ export default class Item extends React.Component {
                 <ItemTr key={i} trKey={v} val={item[v]} />
             );
         });
-        let title = `${item["법정동"]}, ${item["아파트"]}, ${item["거래금액"]}`;
+        let title1 = `${item["법정동"]} ${item["아파트"]} (${item["층"]} 층, ${item["전용면적"]} m²)`;
+        let title2 = `${item["거래금액"]} 만원 [${item["월"]}월/${item["일"]}일]`;
+
         return (
             <React.Fragment>
-                <div className="item-title" onClick={(evt) => this.hClick(evt)}>{this.props.index}. {title}</div>
+                <div className="item-title" onClick={(evt) => this.hClick(evt)}>
+                    <div className="item-num">
+                        <div>{this.props.index}</div>
+                    </div>
+                    <div className="item-content">
+                        <div className="first">{title1}</div>
+                        <div className="second">{title2}</div>
+                    </div>
+                </div>
                 <div className="item-table-wrap">
                     <table>
                         <tbody>

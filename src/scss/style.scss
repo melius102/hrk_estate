@@ -21,161 +21,199 @@ thead,
 tbody,
 tr,
 td {
-  margin: 0;
-  padding: 0;
-  border: 1px solid red;
-  box-sizing: border-box;
-  font-family: 'Roboto', 'Nanum Myeongjo', 'Nanum Gothic', serif;
+    margin: 0;
+    padding: 0;
+    border: 1px solid red;
+    box-sizing: border-box;
+    font-family: 'Roboto', 'Nanum Myeongjo', 'Nanum Gothic', serif;
 }
 
 .rdev {
-  border: 0;
+    border: 0;
 }
 
 #root {
-  @extend .rdev;
-  min-height: 100.1vh;
+    @extend .rdev;
+    min-height: 100.1vh;
 }
 
 $main-color: grey;
 $sub-color: white;
 
 header {
-  @extend .rdev;
-
-  h1 {
-    text-align: center;
-    margin: 40px 0 10px;
-    font-size: 25px;
     @extend .rdev;
-  }
+
+    h1 {
+        text-align: center;
+        margin: 40px 0 10px;
+        font-size: 25px;
+        @extend .rdev;
+    }
 }
 
 footer {
-  @extend .rdev;
-
-  p {
-    padding: 24px 0;
-    text-align: center;
-    color: $main-color;
     @extend .rdev;
-  }
+
+    p {
+        padding: 24px 0;
+        text-align: center;
+        color: $main-color;
+        @extend .rdev;
+    }
 }
 
 .input-design {
-  font-size: 18px;
-  text-align-last: center;
-  background-color: white;
-  border-bottom: 1px solid $main-color;
+    font-size: 18px;
+    text-align-last: center;
+    background-color: white;
+    border-bottom: 1px solid $main-color;
 }
 
 
 #region-select {
-  margin: 10px 0;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  @extend .rdev;
-
-  select {
-    margin: 5px 10px;
-    display: block;
-    -webkit-appearance: none;
-    border-radius: 0px;
-    min-width: 150px;
-    @extend .input-design;
+    margin: 10px 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     @extend .rdev;
-  }
+
+    select {
+        margin: 5px 10px;
+        display: block;
+        -webkit-appearance: none;
+        border-radius: 0px;
+        min-width: 150px;
+        @extend .input-design;
+        @extend .rdev;
+    }
 }
 
 
 #date-picker {
-  margin: 10px 0;
-  display: flex;
-  justify-content: center;
-  @extend .rdev;
-
-  input {
-    @extend .input-design;
+    margin: 10px 0;
+    display: flex;
+    justify-content: center;
     @extend .rdev;
-  }
+
+    input {
+        @extend .input-design;
+        @extend .rdev;
+    }
 }
 
 
 #control-btns {
-  margin: 20px 0;
-  text-align: center;
-  @extend .rdev;
-
-  button {
-    background-color: $main-color;
-    color: white;
-    height: 40px;
-    width: 200px;
-    border-right: 0.2px solid white;
+    margin: 20px 0;
+    text-align: center;
     @extend .rdev;
-  }
+
+    button {
+        background-color: $main-color;
+        color: white;
+        height: 40px;
+        width: 200px;
+        border-right: 0.2px solid white;
+        @extend .rdev;
+    }
 }
 
 
 #item-list {
-  max-width: 700px;
-  min-height: 100px;
-  margin: 0 auto;
-  @extend .rdev;
+    max-width: 700px;
+    min-height: 100px;
+    margin: 0 auto;
+    @extend .rdev;
 
-  .item-title {
-    height: 30px;
-  }
+    .item-title {
+        display: flex;
+        align-content: stretch;
+        @extend .rdev;
+        border-top: 1px solid $main-color;
+        border-bottom: 2px solid white;
 
-  .item-table-wrap {
-    display: none;
+        .item-num {
+            min-width: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: $main-color;
+            color: white;
+            @extend .rdev;
 
-    table {
-      border-collapse: collapse;
-      width: 100%;
+            div {
+                @extend .rdev;
+            }
+        }
+
+        .item-content {
+            width: 100%;
+            @extend .rdev;
+
+            .first {
+                font-size: 20px;
+                text-align: center;
+                padding: 5px;
+                @extend .rdev;
+            }
+
+            .second {
+                font-size: 16px;
+                text-align: right;
+                padding: 5px;
+                color: $main-color;
+                @extend .rdev;
+            }
+        }
     }
 
-    td {
-      border-collapse: collapse;
-      text-align: center;
+    .item-table-wrap {
+        display: none;
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td {
+            border-collapse: collapse;
+            text-align: center;
+        }
     }
-  }
 }
 
 
 #pagination {
-  $p-height: 80px;
-  $p-font-size: 20px;
-  text-align: center;
-  @extend .rdev;
-
-  div {
-    height: $p-height;
-    display: inline-block;
-    font-size: $p-font-size;
-    line-height: $p-height;
-    user-select: none;
+    $p-height: 80px;
+    $p-font-size: 20px;
+    text-align: center;
     @extend .rdev;
 
-    i {
-      width: 60px;
-      font-size: $p-font-size + 20px;
-      line-height: $p-height;
-      vertical-align: top;
-      text-align: center;
-      color: $main-color;
-      @extend .rdev;
-    }
+    div {
+        height: $p-height;
+        display: inline-block;
+        font-size: $p-font-size;
+        line-height: $p-height;
+        user-select: none;
+        @extend .rdev;
 
-    i.end {
-      color: transparentize($main-color, 0.5);
-      @extend .rdev;
-    }
+        i {
+            width: 60px;
+            font-size: $p-font-size + 20px;
+            line-height: $p-height;
+            vertical-align: top;
+            text-align: center;
+            color: $main-color;
+            @extend .rdev;
+        }
 
-    span {
-      font-size: $p-font-size;
-      @extend .rdev;
+        i.end {
+            color: transparentize($main-color, 0.5);
+            @extend .rdev;
+        }
+
+        span {
+            font-size: $p-font-size;
+            @extend .rdev;
+        }
     }
-  }
 }

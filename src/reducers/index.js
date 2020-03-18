@@ -120,8 +120,13 @@ function regionSelector(state = initialState, action) {
 
         case types.UPDATE_ITEM_LIST:
             newState.itemListData = action.itemListData;
-            newState.pageNo = action.itemListData.response.body.pageNo;
-            newState.totalCount = action.itemListData.response.body.totalCount;
+            if (newState.itemListData) {
+                newState.pageNo = action.itemListData.response.body.pageNo;
+                newState.totalCount = action.itemListData.response.body.totalCount;
+            } else {
+                newState.pageNo = 1;
+                newState.totalCount = 1;
+            }
             return newState;
 
         default:

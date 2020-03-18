@@ -13,6 +13,6 @@ const seoulCode = '1100000000';
 const districtCodes = ['1121500000', '1130500000', '1154500000'];
 
 const clog = console.log;
-const rdev = 0;
+const rdev = 1;
 
 export { getList, initCode, nullCode, seoulCode, districtCodes, rdev, clog };
