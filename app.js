@@ -1,3 +1,4 @@
+const production = true;
 const log = console.log;
 const http = require('http');
 const path = require('path');
@@ -5,23 +6,26 @@ const path = require('path');
 // https://expressjs.com/en/resources/middleware.html
 // https://expressjs.com/en/guide/migrating-4.html
 const express = require('express');
-const webpack = require('webpack');
-const webpackDevMiddleware = require('webpack-dev-middleware');
-
 const gov_openapi = require('./modules/gov_openapi');
 const { getItem, getList } = require('./modules/get_code');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 8080; // for gabia
 
-// webpack: auto rebuild
-const config = require('./webpack.config.js');
-const compiler = webpack(config);
+let webpack, webpackDevMiddleware, config, compiler;
+if (!production) {
+    webpack = require('webpack');
+    webpackDevMiddleware = require('webpack-dev-middleware');
 
-// middleware
-app.use(webpackDevMiddleware(compiler, {
-    publicPath: config.output.publicPath
-}));
+    // webpack: auto rebuild
+    config = require('./webpack.config.js');
+    compiler = webpack(config);
+
+    // middleware
+    app.use(webpackDevMiddleware(compiler, {
+        publicPath: config.output.publicPath
+    }));
+}
 
 // app.use(methodOverride());
 // app.use(session({ resave: true, saveUninitialized: true, secret: 'uwotm8' }));

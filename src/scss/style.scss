@@ -168,15 +168,30 @@ footer {
 
     .item-table-wrap {
         display: none;
+        @extend .rdev;
 
         table {
             border-collapse: collapse;
             width: 100%;
+            margin: 10px 0;
+            @extend .rdev;
+        }
+
+        tbody,
+        tr {
+            @extend .rdev;
         }
 
         td {
             border-collapse: collapse;
             text-align: center;
+            padding: 10px 0;
+            @extend .rdev;
+            border-bottom: 1px solid transparentize($main-color, 0.7);
+        }
+
+        td:first-child {
+            background-color: transparentize($main-color, 0.7);
         }
     }
 }
