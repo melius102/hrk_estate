@@ -1,5 +1,5 @@
-const clog = console.log;
 const fs = require('fs'); // https://nodejs.org/api/fs.html
+const { clog } = require('./util');
 
 // Exceptional Code
 const seoul = '1100000000';

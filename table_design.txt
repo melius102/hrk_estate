@@ -1,0 +1,73 @@
+http://www.juso.go.kr
+
+table 1 queries
+LAWD_CD     UINT(5)  PK  #11000
+DEAL_YMD    DATE     PK  201501
+cnt         UINT
+
+
+table 2 region_names
+region_cd   UINT(5)  PK   #41550    >>  '지역코드': '41550',
+region_nm   VARCHAR(255)
+
+
+table 3 road_names
+region_cd   UINT(5)  PK   #41550    >>  '지역코드': '41550',       
+rn_cd       UINT(7)  PK   #4424523  >>  '도로명코드': '4424523',
+road_nm     VARCHAR(255)  월덕천길  >>  '도로명': '월덕천길',
+
+
+table 4 dong_names
+region_cd   UINT(5)  PK  #41550    >> '지역코드': '41550',       
+dn_cd       UINT(5)  PK  #10100    >> '법정동읍면동코드': '10100',
+dong_nm     VARCHAR(255) 봉산동    >> '법정동': '봉산동'
+
+
+table 5 contracts{region_cd}
+amount      UINT     PK  >> '거래금액': '7,100',
+cnst_year   YEAR     PK  >> '건축년도': '1992',
+cntr_date   DATE     PK  >> '년': '2020' + '월': '2' + '일': '16'
+apt         VARCHAR  PK  >> '아파트': '한주',
+floor       INT      PK  >> '층': '11'
+area        FLOAT    pk  >> '전용면적': '59.55',
+region_cd   UINT(5)  PK  >> '지역코드': '41550',
+rn_cd       UINT(7)  PK  >> '도로명코드': '4424523',
+rn_sn_cd    UINT(2)  PK  >> '도로명일련번호코드': '01',
+rn_ug_cd    UINT(1)  PK  >> '도로명지상지하코드': '0',
+rn_bldg_mc  UINT(5)  PK  >> '도로명건물본번호코드': '00017',
+rn_bldg_sc  UINT(5)  PK  >> '도로명건물부번호코드': '00000',
+dn_cd       UINT(5)      >> '법정동읍면동코드': '10100',
+dn_mc       UINT(4)      >> '법정동본번코드': '0042',
+dn_sc       UINT(4)      >> '법정동부번코드': '0000',
+dn_ln_cd    UINT(1)      >> '법정동지번코드': '1',
+ln          UINT         >> '지번': '42',
+
+
+
+
+
+## original data ##
+amount     > '거래금액': '7,100',
+cnst_year  > '건축년도': '1992',
+year       > '년': '2020',
+month      > '월': '2',
+day        > '일': '16',
+road_nm    > '도로명': '월덕천길',
+rn_bldg_mc > '도로명건물본번호코드': '00017',
+rn_bldg_sc > '도로명건물부번호코드': '00000',
+rn_dist_cd > '도로명시군구코드': '41550',    ## 중복제외
+rn_sn_cd   > '도로명일련번호코드': '01',
+rn_ug_cd   > '도로명지상지하코드': '0',
+rn_cd      > '도로명코드': '4424523',
+dong_nm    > '법정동': '봉산동',
+dn_mc      > '법정동본번코드': '0042',
+dn_sc      > '법정동부번코드': '0000',
+dn_dist_cd > '법정동시군구코드': '41550',    ## 중복제외
+dn_cd      > '법정동읍면동코드': '10100',
+dn_ln_cd   > '법정동지번코드': '1',
+apt        > '아파트': '한주',
+sn         > '일련번호': '41550-2',      ## 제외
+area       > '전용면적': '59.55',
+ln         > '지번': '42',
+region_cd  > '지역코드': '41550',       
+floor      > '층': '11'

@@ -22,7 +22,8 @@ export default class Item extends React.Component {
 
     render() {
         let item = this.props.data;
-        let newItem = this.preprocessItem(item);
+        let newItem = item;
+        // let newItem = this.preprocessItem(item);
         let keys = Object.keys(newItem);
         let itemTr = [];
         keys.forEach((v, i) => {

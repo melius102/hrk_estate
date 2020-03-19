@@ -1,6 +1,6 @@
 // https://www.data.go.kr/
 // http://openapi.molit.go.kr/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptTradeDev?_wadl&type=xml
-const clog = console.log;
+const { clog } = require('./util');
 
 const parser = require('xml2json');
 const http = require('http');

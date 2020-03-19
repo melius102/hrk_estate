@@ -1,7 +1,8 @@
 const path = require('path');
 const express = require("express");
+const { clog } = require('../modules/util');
+
 const router = express.Router();
-const clog = console.log;
 
 router.get("/", (req, res) => {
     // res.send("<h1>Hello world</h1>"); // send is req's method of express' app

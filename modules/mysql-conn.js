@@ -1,3 +1,4 @@
+// https://github.com/mysqljs/mysql#connection-options
 // const mysql = require('mysql2'); // normal version: mysql2/index.js
 const mysql = require('mysql2/promise'); // promise version: mysql2/promise.js
 let pool = mysql.createPool({
@@ -7,6 +8,7 @@ let pool = mysql.createPool({
     port: process.env.mysqlport,
     database: process.env.mysqldb,
     connectionLimit: 15
+    // connectTimeout: 30000,
 });
 
 async function sqlAction(pool, sql, sqlVals) {

@@ -1,11 +1,12 @@
 const http = require('http');
 const path = require('path');
-const clog = console.log;
+const { clog } = require('./modules/util');
 
 // https://expressjs.com/en/resources/middleware.html
 // https://expressjs.com/en/guide/migrating-4.html
 const express = require('express');
-const dotenv = require('dotenv').config();
+const dotenv = require('dotenv');
+dotenv.config({ path: path.resolve(process.cwd(), './env/.env') });
 
 // routers
 const indexRouter = require('./router/index');
@@ -17,7 +18,7 @@ clog('process.env.PORT', process.env.PORT);
 clog('process.env.NODE_ENV', process.env.NODE_ENV);
 
 let webpack, webpackDevMiddleware, config, compiler;
-if (process.env.nodenv!=='production') {
+if (process.env.nodenv !== 'production') {
     webpack = require('webpack');
     webpackDevMiddleware = require('webpack-dev-middleware');
 
@@ -47,6 +48,13 @@ const server = http.createServer(app);
 server.listen(port, function () {
     clog("http://192.168.0.64:" + port);
 });
+
+// https://programmingsummaries.tistory.com/375
+process.on('uncaughtException', function (error) {
+    clog('uncaughtException occur:');
+    clog(error);
+});
+
 
 // https://medium.com/@binyamin/creating-a-node-express-webpack-app-with-dev-and-prod-builds-a4962ce51334
 // https://www.youtube.com/channel/UCuRGaS7uXLAIrCrxKN_Ke7g
