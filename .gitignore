@@ -4,3 +4,4 @@
 /dist/public/js
 /dist/data
 .DS_Store
+.env

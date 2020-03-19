@@ -15,7 +15,7 @@ export default class ResultLoad extends React.Component {
         if (!this.props.LAWD_CD || !this.props.DEAL_YMD) return;
         let { LAWD_CD, DEAL_YMD, numOfRows } = this.props;
         let pageNo = 1;
-        fetch(`/data/${LAWD_CD}/${DEAL_YMD}/${pageNo}/${numOfRows}`).then((response) => {
+        fetch(`/redata/data/${LAWD_CD}/${DEAL_YMD}/${pageNo}/${numOfRows}`).then((response) => {
             // clog(response); // header
             return response.json();
         }).then((data) => {

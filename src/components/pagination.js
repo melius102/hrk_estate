@@ -33,7 +33,7 @@ export default class Pagination extends React.Component {
         let { LAWD_CD, DEAL_YMD, pageNo, numOfRows } = this.props;
         let newPageNo = Number(pageNo) + dpage;
         if (newPageNo < 1 || newPageNo > this.state.totalPage) return;
-        fetch(`/data/${LAWD_CD}/${DEAL_YMD}/${newPageNo}/${numOfRows}`).then((response) => {
+        fetch(`/redata/data/${LAWD_CD}/${DEAL_YMD}/${newPageNo}/${numOfRows}`).then((response) => {
             // clog(response); // header
             return response.json();
         }).then((data) => {

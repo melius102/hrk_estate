@@ -1,12 +1,12 @@
 // https://www.data.go.kr/
 // http://openapi.molit.go.kr/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptTradeDev?_wadl&type=xml
-const log = console.log;
+const clog = console.log;
 
 const parser = require('xml2json');
 const http = require('http');
-const pKeys = require('./private_keys');
+// const pKeys = require('./private_keys');
 
-const serviceKey = pKeys.serviceKey;
+const serviceKey = process.env.serviceKey;
 const domain = "http://openapi.molit.go.kr/OpenAPI_ToolInstallPackage";
 const path = "/service/rest/RTMSOBJSvc/getRTMSDataSvcAptTradeDev";
 
