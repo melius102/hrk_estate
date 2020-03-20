@@ -1,5 +1,5 @@
 const express = require("express");
-const { pool, sqlAction } = require('../modules/mysql-conn');
+const { pool, errMessage, sqlExecute, createTable } = require('../modules/mysql-conn');
 const { clog, odKeys, ctKeys } = require('../modules/util');
 
 const router = express.Router();
@@ -21,13 +21,13 @@ router.get('/data/:LAWD_CD/:DEAL_YMD/:pageNo/:numOfRows', async (req, res) => {
     let numOfRows = req.params.numOfRows;
     clog("data:", LAWD_CD, DEAL_YMD, pageNo, numOfRows);
 
+    let tableName = `contracts${LAWD_CD}`;
+    await createTable(tableName);
+
     // queries
     let sql = "INSERT INTO queries SET LAWD_CD=?, DEAL_YMD=?";
     let sqlVals = [LAWD_CD, `${DEAL_YMD}01`];
-    let result;
-    try {
-        result = await pool.execute(sql, sqlVals);
-    } catch (err) { clog(`err(query): ${err.code}(${err.errno}) ${err.sqlMessage}`); }
+    let result = await sqlExecute(sql, sqlVals, 'query');
 
     gov_openapi.getJSON(LAWD_CD, DEAL_YMD, pageNo, numOfRows, async (err, json) => {
         if (err) { res.send('error'); }
@@ -40,7 +40,7 @@ router.get('/data/:LAWD_CD/:DEAL_YMD/:pageNo/:numOfRows', async (req, res) => {
 
             let sqlr = "INSERT INTO road_names SET region_cd=?, rn_cd=?, road_nm=?"; // road_names
             let sqld = "INSERT INTO dong_names SET region_cd=?, dn_cd=?, dong_nm=?"; // dong_names
-            let sqlc = "INSERT INTO contracts SET amount=?, cntr_date=?"; // contracts
+            let sqlc = `INSERT INTO ${tableName} SET amount=?, cntr_date=?`; // contracts
             for (let key of keys) sqlc += `, ${key}=?`;
             // clog(sqlc);
 
@@ -52,15 +52,11 @@ router.get('/data/:LAWD_CD/:DEAL_YMD/:pageNo/:numOfRows', async (req, res) => {
 
                 // road_names
                 sqlVals = [item[odKeys.region_cd], item[odKeys.rn_cd], item[odKeys.road_nm]];
-                try {
-                    result = await pool.execute(sqlr, sqlVals);
-                } catch (err) { clog(`err(road): ${err.code}(${err.errno}) ${err.sqlMessage}`); }
+                result = await sqlExecute(sqlr, sqlVals, 'road');
 
                 // dong_names
                 sqlVals = [item[odKeys.region_cd], item[odKeys.dn_cd], item[odKeys.dong_nm]];
-                try {
-                    result = await pool.execute(sqld, sqlVals);
-                } catch (err) { clog(`err(dong): ${err.code}(${err.errno}) ${err.sqlMessage}`); }
+                result = await sqlExecute(sqld, sqlVals, 'dong');
 
                 // contracts
                 let amount = '';
@@ -69,15 +65,8 @@ router.get('/data/:LAWD_CD/:DEAL_YMD/:pageNo/:numOfRows', async (req, res) => {
 
                 let cntr_date = item['년'] + ('0' + item['월']).slice(-2) + ('0' + item['일']).slice(-2);
                 sqlVals = [amount, cntr_date];
-                for (let v of values) {
-                    if (item[v]) sqlVals.push(item[v]);
-                    else sqlVals.push(null);
-                }
-                try {
-                    result = await pool.execute(sqlc, sqlVals);
-                    // clog('affectedRows:', result[0].affectedRows);
-                    // affectedRows += result[0].affectedRows;
-                } catch (err) { clog(`err(cntr): ${err.code}(${err.errno}) ${err.sqlMessage}`); };
+                for (let v of values) sqlVals.push(item[v]);
+                result = await sqlExecute(sqlc, sqlVals, 'cntr');
             }
             clog('total items:', items.length);
             clog('total affectedRows:', affectedRows);
