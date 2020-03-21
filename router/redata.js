@@ -33,7 +33,7 @@ router.get('/data/:LAWD_CD/:DEAL_YMD/:pageNo/:numOfRows', async (req, res) => {
         if (err) { res.send('error'); }
         else {
             res.json(json);
-            let items = JSON.parse(json).response.body.items.item;
+            let items = json.response.body.items.item;
 
             let keys = Object.keys(ctKeys);
             let values = Object.values(ctKeys);
@@ -46,7 +46,11 @@ router.get('/data/:LAWD_CD/:DEAL_YMD/:pageNo/:numOfRows', async (req, res) => {
 
             let errors = 0;
             let affectedRows = 0;
-            for (let item of items) {
+
+            // for (let item of items) {}
+            clog('items.length', items.length);
+            for (let index = 0; index < items.length; index++) {
+                let item = items[index];
 
                 let sqlVals, result;
 

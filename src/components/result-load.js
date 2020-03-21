@@ -18,8 +18,8 @@ export default class ResultLoad extends React.Component {
         fetch(`/redata/data/${LAWD_CD}/${DEAL_YMD}/${pageNo}/${numOfRows}`).then((response) => {
             // clog(response); // header
             return response.json();
-        }).then((data) => {
-            let jsonData = JSON.parse(data);
+        }).then((jsonData) => {
+            // let jsonData = JSON.parse(data);
             this.props.dpUpdateItemList(jsonData);
         });
     }
