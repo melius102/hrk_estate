@@ -23,17 +23,22 @@ async function sqlAction(pool, sql, sqlVals) {
 const dbErrnoList = [1062];
 const noDisplayErrnoList = [1062];
 
-function errMessage(err, title) {
+function errMessage(err, title, index = null) {
     if (noDisplayErrnoList.includes(err.errno)) {
     } else if (dbErrnoList.includes(err.errno)) {
         clog(`err(${title}): ${err.code}(${err.errno}) ${err.sqlMessage}`);
     } else {
-        clog(`err(${title}):`);
+        if (index == null) clog(`err(${title}):`);
+        else {
+            clog(`err(${title},${index.index}):`);
+            clog(`err(${title},${index.apt}):`);
+            clog(`err(${title},${index.dn}):`);
+        }
         clog(err);
     }
 }
 
-async function sqlExecute(sql, sqlVals, title) {
+async function sqlExecute(sql, sqlVals, title, index = null) {
     let result;
     let newSqlVals = sqlVals.map((v) => {
         if (v) return v;
@@ -43,7 +48,7 @@ async function sqlExecute(sql, sqlVals, title) {
     try {
         result = await pool.execute(sql, newSqlVals);
         return result;
-    } catch (err) { errMessage(err, title); }
+    } catch (err) { errMessage(err, title, index); }
 }
 
 async function createTable(tableName) {

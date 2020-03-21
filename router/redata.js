@@ -50,6 +50,8 @@ router.get('/data/:LAWD_CD/:DEAL_YMD/:pageNo/:numOfRows', async (req, res) => {
         let { totalCount } = result[0][0];
         // clog(totalCount);
 
+        // INNER JOIN road_names as rn : 483
+        // LEFT OUTER JOIN road_names as rn : 487
         // let sql = `SELECT * FROM contracts${LAWD_CD} ORDER BY dn_cd`; // DESC
         sql = `SELECT
         FORMAT(ct.amount, 0) AS amount,
@@ -72,13 +74,13 @@ router.get('/data/:LAWD_CD/:DEAL_YMD/:pageNo/:numOfRows', async (req, res) => {
         CONCAT(ct.dn_ln_cd) AS dn_ln_cd,
         CONCAT(ct.ln) AS ln 
         FROM contracts${LAWD_CD} as ct
-        JOIN road_names as rn
-        JOIN dong_names as dn
-        WHERE ct.region_cd = rn.region_cd
-        AND ct.region_cd = dn.region_cd
-        AND ct.rn_cd = rn.rn_cd
+        INNER JOIN dong_names as dn
+        ON ct.region_cd = dn.region_cd
         AND ct.dn_cd = dn.dn_cd
-        AND cntr_date BETWEEN '${DEAL_YMD.slice(0, -2)}-${DEAL_YMD.slice(-2)}-01'
+        LEFT OUTER JOIN road_names as rn
+        ON ct.region_cd = rn.region_cd
+        AND ct.rn_cd = rn.rn_cd
+        WHERE cntr_date BETWEEN '${DEAL_YMD.slice(0, -2)}-${DEAL_YMD.slice(-2)}-01'
         AND '${DEAL_YMD.slice(0, -2)}-${DEAL_YMD.slice(-2)}-31'
         ORDER BY ct.dn_cd, ct.cntr_date, ct.area DESC
         LIMIT ${(Number(pageNo) - 1) * Number(numOfRows)}, ${numOfRows}`;

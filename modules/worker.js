@@ -61,6 +61,7 @@ async function insertDATA(LAWD_CD, DEAL_YMD, body) {
     let keys = Object.keys(o2dKeys);
     let values = Object.values(o2dKeys);
 
+    // if road_nm==null? change to outer join
     let sqlr = "INSERT INTO road_names SET region_cd=?, rn_cd=?, road_nm=?"; // road_names
     let sqld = "INSERT INTO dong_names SET region_cd=?, dn_cd=?, dong_nm=?"; // dong_names
     let sqlc = `INSERT INTO ${tableName} SET amount=?, cntr_date=?`; // contracts
@@ -77,7 +78,7 @@ async function insertDATA(LAWD_CD, DEAL_YMD, body) {
 
         // road_names
         sqlVals = [item[odfKeys.region_cd], item[odfKeys.rn_cd], item[odfKeys.road_nm]];
-        result = await sqlExecute(sqlr, sqlVals, 'road');
+        result = await sqlExecute(sqlr, sqlVals, 'road', { index, apt: item['아파트'], dn: item['법정동'] });
 
         // dong_names
         sqlVals = [item[odfKeys.region_cd], item[odfKeys.dn_cd], item[odfKeys.dong_nm]];
