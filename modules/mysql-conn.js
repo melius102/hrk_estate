@@ -21,9 +21,11 @@ async function sqlAction(pool, sql, sqlVals) {
 }
 
 const dbErrnoList = [1062];
+const noDisplayErrnoList = [1062];
 
 function errMessage(err, title) {
-    if (dbErrnoList.includes(err.errno)) {
+    if (noDisplayErrnoList.includes(err.errno)) {
+    } else if (dbErrnoList.includes(err.errno)) {
         clog(`err(${title}): ${err.code}(${err.errno}) ${err.sqlMessage}`);
     } else {
         clog(`err(${title}):`);

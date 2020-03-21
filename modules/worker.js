@@ -1,5 +1,5 @@
 const gov_openapi = require('../modules/gov_openapi');
-const { clog, odKeys, ctKeys } = require('./util');
+const { clog, odfKeys, o2dKeys } = require('./util');
 const { pool, errMessage, sqlExecute, createTable } = require('../modules/mysql-conn');
 const { Worker, isMainThread, parentPort } = require('worker_threads');
 
@@ -58,8 +58,8 @@ async function insertDATA(LAWD_CD, DEAL_YMD, body) {
     let result = await sqlExecute(sql, sqlVals, 'query');
 
     let items = body.items.item;
-    let keys = Object.keys(ctKeys);
-    let values = Object.values(ctKeys);
+    let keys = Object.keys(o2dKeys);
+    let values = Object.values(o2dKeys);
 
     let sqlr = "INSERT INTO road_names SET region_cd=?, rn_cd=?, road_nm=?"; // road_names
     let sqld = "INSERT INTO dong_names SET region_cd=?, dn_cd=?, dong_nm=?"; // dong_names
@@ -76,11 +76,11 @@ async function insertDATA(LAWD_CD, DEAL_YMD, body) {
         let sqlVals, result;
 
         // road_names
-        sqlVals = [item[odKeys.region_cd], item[odKeys.rn_cd], item[odKeys.road_nm]];
+        sqlVals = [item[odfKeys.region_cd], item[odfKeys.rn_cd], item[odfKeys.road_nm]];
         result = await sqlExecute(sqlr, sqlVals, 'road');
 
         // dong_names
-        sqlVals = [item[odKeys.region_cd], item[odKeys.dn_cd], item[odKeys.dong_nm]];
+        sqlVals = [item[odfKeys.region_cd], item[odfKeys.dn_cd], item[odfKeys.dong_nm]];
         result = await sqlExecute(sqld, sqlVals, 'dong');
 
         // contracts
@@ -92,8 +92,14 @@ async function insertDATA(LAWD_CD, DEAL_YMD, body) {
         sqlVals = [amount, cntr_date];
         for (let v of values) sqlVals.push(item[v]);
         result = await sqlExecute(sqlc, sqlVals, 'cntr');
+        if (index % 20 == 0) clog(`index: ${index}/${items.length}`);
     }
     clog('total items:', items.length);
     clog('total affectedRows:', affectedRows);
     clog('total errors:', errors);
+
+    // queries update for finishing storing
+    sql = "UPDATE queries SET fine=? WHERE LAWD_CD=? AND DEAL_YMD=?";
+    sqlVals = [1, LAWD_CD, `${DEAL_YMD}01`];
+    result = await sqlExecute(sql, sqlVals, 'query');
 }

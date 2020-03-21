@@ -22,6 +22,7 @@ function getJSON(LAWD_CD, DEAL_YMD, pageNo, numOfRows, cb) {
         result.on('data', (chunk) => { rawData += chunk; });
         result.on('end', () => {
             let xml = rawData;
+            // clog(xml);
             try { // for JSON.parse(parserx.toJson(xml))
                 // let json = JSON.parse(parserx.toJson(xml)); // change to parserf for worker
                 let json = parserf.parse(xml, {

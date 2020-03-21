@@ -36,9 +36,9 @@ export default class Pagination extends React.Component {
         fetch(`/redata/data/${LAWD_CD}/${DEAL_YMD}/${newPageNo}/${numOfRows}`).then((response) => {
             // clog(response); // header
             return response.json();
-        }).then((jsonData) => {
-            // let jsonData = JSON.parse(data);
-            this.props.dpUpdateItemList(jsonData);
+        }).then((jsonBody) => {
+            // let jsonBody = JSON.parse(data);
+            this.props.dpUpdateItemList(jsonBody);
             this.setState({ pageNoDisplay: "block" });
         });
         // this.props.dpPageChange(pageNo); // pageNo 

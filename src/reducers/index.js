@@ -16,7 +16,7 @@ const initialState = {
 
     // result load
     pageNo: 1,
-    numOfRows: 15,
+    numOfRows: 20,
     totalCount: 1,
 
     // map
@@ -121,8 +121,8 @@ function regionSelector(state = initialState, action) {
         case types.UPDATE_ITEM_LIST:
             newState.itemListData = action.itemListData;
             if (newState.itemListData) {
-                newState.pageNo = action.itemListData.response.body.pageNo;
-                newState.totalCount = action.itemListData.response.body.totalCount;
+                newState.pageNo = action.itemListData.pageNo; // body.pageNo
+                newState.totalCount = action.itemListData.totalCount; // body.totalCount
             } else {
                 newState.pageNo = 1;
                 newState.totalCount = 1;
