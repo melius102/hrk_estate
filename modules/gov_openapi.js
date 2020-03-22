@@ -37,6 +37,26 @@ function getJSON(LAWD_CD, DEAL_YMD, pageNo, numOfRows, cb) {
             }
         });
     });
+}
+
+function getJSONProm(LAWD_CD, DEAL_YMD, pageNo, numOfRows) {
+    return new Promise(function (resolve, reject) {
+        let gURL = `${domain + gPath}?LAWD_CD=${LAWD_CD}&DEAL_YMD=${DEAL_YMD}&pageNo=${pageNo}&numOfRows=${numOfRows}&serviceKey=${serviceKey}`;
+        http.get(gURL, (result) => { // method: callback function
+            // const { statusCode } = result;
+            let rawData = '';
+            result.setEncoding('utf8');
+            result.on('data', (chunk) => { rawData += chunk; });
+            result.on('end', () => {
+                let xml = rawData;
+                // clog(xml);
+                try {
+                    let json = parserf.parse(xml, { parseNodeValue: false });
+                    resolve(json);
+                } catch (err) { reject(err); }
+            });
+        });
+    });
 
     // method: promise
     // https://nodejs.org/dist/latest-v8.x/docs/api/util.html#util_util_promisify_original
@@ -45,7 +65,7 @@ function getJSON(LAWD_CD, DEAL_YMD, pageNo, numOfRows, cb) {
 }
 
 let gov_openapi = {
-    getJSON
+    getJSON, getJSONProm
 };
 
 module.exports = gov_openapi;

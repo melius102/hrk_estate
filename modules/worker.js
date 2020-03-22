@@ -1,5 +1,5 @@
 const gov_openapi = require('../modules/gov_openapi');
-const { clog, odfKeys, o2dKeys } = require('./util');
+const { clog, odfKeys, o2dKeys, LAWD_CDList } = require('./util');
 const { pool, errMessage, sqlExecute, createTable } = require('../modules/mysql-conn');
 const { Worker, isMainThread, parentPort } = require('worker_threads');
 
@@ -7,16 +7,49 @@ clog('isMainThread:', isMainThread); // false
 
 parentPort.on('message', (requ) => {
     switch (requ.cmd) {
-        case 'readFull':
-            readFull(requ);
+        case 'readOne': // read one district on specific month
+            readOne(requ);
+            break;
+        case 'readMonth': // read all district on specific month
+            readMonth(requ);
+            break;
+        case 'readPeriod': // read all district for specific period
+            // readPeriod(requ);
             break;
     }
 });
 
-function readFull(requ) {
+async function readMonth(requ) {
+    let { DEAL_YMD } = requ;
+    let LAWD_CDListKeys = Object.keys(LAWD_CDList);
+    let idx = 1;
+    for (let LAWD_CD of LAWD_CDListKeys) {
+        // promise then catch
+        // gov_openapi.getJSONProm(LAWD_CD, DEAL_YMD, "1", "2").then(json => {
+        //     let { totalCount } = json.response.body;
+        //     clog('tatalCount(worker)', totalCount);
+        //     getJSONDATA(LAWD_CD, DEAL_YMD, totalCount);
+        // }).catch(err => clog(err));
+
+        // async await
+        try {
+            let json = await gov_openapi.getJSONProm(LAWD_CD, DEAL_YMD, "1", "2");
+            let { header, body } = json.response;
+            if (body) {
+                let { totalCount } = body;
+                clog('tatalCount(worker)', totalCount);
+                await getJSONDATAProm(LAWD_CD, DEAL_YMD, totalCount);
+            } else clog(`error(header) [${LAWD_CDList[LAWD_CD]}]:`, header);
+        } catch (err) { clog(err); }
+        clog(`region ${LAWD_CDList[LAWD_CD]} finished: ${idx++}/${LAWD_CDListKeys.length}`);
+    }
+    clog(`all region gathering finished.`);
+}
+
+function readOne(requ) {
     let { LAWD_CD, DEAL_YMD } = requ;
     gov_openapi.getJSON(LAWD_CD, DEAL_YMD, "1", "2", (err, json) => {
-        if (err) { res.send('error'); }
+        if (err) { clog(err); }
         else {
             let { totalCount } = json.response.body;
             clog('tatalCount(worker)', totalCount);
@@ -27,7 +60,7 @@ function readFull(requ) {
 
 function getJSONDATA(LAWD_CD, DEAL_YMD, numOfRows) {
     gov_openapi.getJSON(LAWD_CD, DEAL_YMD, "1", numOfRows, (err, json) => {
-        if (err) { res.send('error'); }
+        if (err) { clog(err); }
         else {
             let { body } = json.response; // totalCount: string
             let totalCount = body.totalCount;
@@ -47,8 +80,27 @@ function getJSONDATA(LAWD_CD, DEAL_YMD, numOfRows) {
     });
 }
 
-async function insertDATA(LAWD_CD, DEAL_YMD, body) {
+async function getJSONDATAProm(LAWD_CD, DEAL_YMD, numOfRows) {
+    try {
+        let json = await gov_openapi.getJSONProm(LAWD_CD, DEAL_YMD, "1", numOfRows);
+        let { body } = json.response; // totalCount: string
+        let totalCount = body.totalCount;
+        if (totalCount == '0') {
+            // body.items.item = [];        // x: items: {} >> {item:[]}
+            body.items = { item: [] };      // f: items: '' >> {item:[]}
+        } else if (totalCount == '1') {
+            body.items.item = [body.items.item];   // items: {item: {}} >> {item: [{}]}
+        } else if (!(body.items.item instanceof Array)) {
+            clog('!(body.items.item instanceof Array)');
+            body.items.item = [body.items.item];   // items: {item: {}} >> {item: [{}]}
+        }
+        // clog('totalCount', totalCount);
+        clog('item.length', body.items.item.length);
+        await insertDATA(LAWD_CD, DEAL_YMD, body);
+    } catch (err) { clog(err); }
+}
 
+async function insertDATA(LAWD_CD, DEAL_YMD, body) {
     let tableName = `contracts${LAWD_CD}`;
     await createTable(tableName);
 
@@ -103,4 +155,5 @@ async function insertDATA(LAWD_CD, DEAL_YMD, body) {
     sql = "UPDATE queries SET fine=? WHERE LAWD_CD=? AND DEAL_YMD=?";
     sqlVals = [1, LAWD_CD, `${DEAL_YMD}01`];
     result = await sqlExecute(sql, sqlVals, 'query');
+    // clog(result[0]);
 }

@@ -3,5 +3,6 @@
 /modules/data
 /dist/public/js
 /dist/data
+/notitia
 .DS_Store
 /env

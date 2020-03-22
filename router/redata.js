@@ -1,7 +1,7 @@
 const path = require('path');
 const express = require("express");
 const { pool, errMessage, sqlExecute, createTable } = require('../modules/mysql-conn');
-const { clog, odfKeys, d2oKeys } = require('../modules/util');
+const { clog, odfKeys, d2oKeys, validateDate } = require('../modules/util');
 const { Worker, isMainThread } = require('worker_threads');
 
 const router = express.Router();
@@ -29,6 +29,12 @@ router.get('/data/:LAWD_CD/:DEAL_YMD/:pageNo/:numOfRows', async (req, res) => {
     let numOfRows = req.params.numOfRows;
     clog("data:", LAWD_CD, DEAL_YMD, pageNo, numOfRows);
 
+    if (!validateDate(DEAL_YMD)) {
+        let body = { numOfRows, pageNo, totalCount: 0, items: { item: [] } };
+        res.json(body);
+        return;
+    }
+
     // check to have data in DB
     let sql = 'SELECT fine FROM queries WHERE LAWD_CD=? AND DEAL_YMD=?';
     let sqlVals = [LAWD_CD, , `${DEAL_YMD}01`];
@@ -39,7 +45,7 @@ router.get('/data/:LAWD_CD/:DEAL_YMD/:pageNo/:numOfRows', async (req, res) => {
         if (result[0][0].fine == 1) dbState = 1; // hava data, so read from db
     } else { // no data
         // run worker
-        worker.postMessage({ cmd: 'readFull', LAWD_CD, DEAL_YMD });
+        worker.postMessage({ cmd: 'readOne', LAWD_CD, DEAL_YMD });
     }
 
     if (dbState) {
@@ -117,6 +123,16 @@ router.get('/data/:LAWD_CD/:DEAL_YMD/:pageNo/:numOfRows', async (req, res) => {
                 res.json(body);
             }
         });
+    }
+});
+
+router.get('/readMonth/:DEAL_YMD', async (req, res) => {
+    let DEAL_YMD = req.params.DEAL_YMD;
+    if (validateDate(DEAL_YMD)) {
+        worker.postMessage({ cmd: 'readMonth', DEAL_YMD });
+        res.json({ res: 'start gethering' });
+    } else {
+        res.json({ res: 'bad query' });
     }
 });
 

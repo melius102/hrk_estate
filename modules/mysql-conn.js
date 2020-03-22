@@ -20,13 +20,14 @@ async function sqlAction(pool, sql, sqlVals) {
     return result;
 }
 
-const dbErrnoList = [1062];
+const dbErrnoList = [1062, 1048];
 const noDisplayErrnoList = [1062];
 
 function errMessage(err, title, index = null) {
     if (noDisplayErrnoList.includes(err.errno)) {
     } else if (dbErrnoList.includes(err.errno)) {
-        clog(`err(${title}): ${err.code}(${err.errno}) ${err.sqlMessage}`);
+        if (index == null) clog(`err(${title}): ${err.code}(${err.errno}) ${err.sqlMessage}`);
+        else clog(`err(${title}): [${index.dn} ${index.apt}] ${err.code}(${err.errno}) ${err.sqlMessage}`);
     } else {
         if (index == null) clog(`err(${title}):`);
         else {
@@ -88,10 +89,10 @@ async function createTable(tableName) {
             result = await pool.execute(sql);
             // clog(result[0].affectedRows); // serverStatus: 2;
             if (Number.isInteger(result[0].affectedRows)) {
-                clog({ result: 'create table' });
+                clog({ result: `create table ${tableName}` });
             }
         } else {
-            clog({ result: 'table already exist' });
+            clog({ result: `table ${tableName} already exist` });
         }
     } catch (err) { errMessage(err, "table"); }
 }
