@@ -1,9 +1,10 @@
 const gov_openapi = require('../modules/gov_openapi');
 const { clog, odfKeys, o2dKeys, LAWD_CDList } = require('./util');
-const { pool, errMessage, sqlExecute, createTable } = require('../modules/mysql-conn');
+const { pool, errMessage, sqlExecute, createTable, setSchedule } = require('../modules/mysql-conn');
 const { Worker, isMainThread, parentPort } = require('worker_threads');
 
 clog('isMainThread:', isMainThread); // false
+let j = setSchedule();
 
 parentPort.on('message', (requ) => {
     switch (requ.cmd) {
@@ -33,13 +34,18 @@ async function readMonth(requ) {
 
         // async await
         try {
-            let json = await gov_openapi.getJSONProm(LAWD_CD, DEAL_YMD, "1", "2");
-            let { header, body } = json.response;
-            if (body) {
-                let { totalCount } = body;
-                clog('tatalCount(worker)', totalCount);
-                await getJSONDATAProm(LAWD_CD, DEAL_YMD, totalCount);
-            } else clog(`error(header) [${LAWD_CDList[LAWD_CD]}]:`, header);
+            // method 1: get number
+            // let json = await gov_openapi.getJSONProm(LAWD_CD, DEAL_YMD, "1", "2");
+            // let { header, body } = json.response;
+            // if (body) {
+            //     let { totalCount } = body;
+            //     clog('tatalCount(worker)', totalCount);
+            //     await getJSONDATAProm(LAWD_CD, DEAL_YMD, totalCount);
+            // } else clog(`error(header) [${LAWD_CDList[LAWD_CD]}]:`, header);
+
+            // method 2
+            await getJSONDATAProm(LAWD_CD, DEAL_YMD, "10000");
+
         } catch (err) { clog(err); }
         clog(`region ${LAWD_CDList[LAWD_CD]} finished: ${idx++}/${LAWD_CDListKeys.length}`);
     }
@@ -83,20 +89,22 @@ function getJSONDATA(LAWD_CD, DEAL_YMD, numOfRows) {
 async function getJSONDATAProm(LAWD_CD, DEAL_YMD, numOfRows) {
     try {
         let json = await gov_openapi.getJSONProm(LAWD_CD, DEAL_YMD, "1", numOfRows);
-        let { body } = json.response; // totalCount: string
-        let totalCount = body.totalCount;
-        if (totalCount == '0') {
-            // body.items.item = [];        // x: items: {} >> {item:[]}
-            body.items = { item: [] };      // f: items: '' >> {item:[]}
-        } else if (totalCount == '1') {
-            body.items.item = [body.items.item];   // items: {item: {}} >> {item: [{}]}
-        } else if (!(body.items.item instanceof Array)) {
-            clog('!(body.items.item instanceof Array)');
-            body.items.item = [body.items.item];   // items: {item: {}} >> {item: [{}]}
-        }
-        // clog('totalCount', totalCount);
-        clog('item.length', body.items.item.length);
-        await insertDATA(LAWD_CD, DEAL_YMD, body);
+        let { header, body } = json.response; // totalCount: string
+        if (body) {
+            let totalCount = body.totalCount;
+            if (totalCount == '0') {
+                // body.items.item = [];        // x: items: {} >> {item:[]}
+                body.items = { item: [] };      // f: items: '' >> {item:[]}
+            } else if (totalCount == '1') {
+                body.items.item = [body.items.item];   // items: {item: {}} >> {item: [{}]}
+            } else if (!(body.items.item instanceof Array)) {
+                clog('!(body.items.item instanceof Array)');
+                body.items.item = [body.items.item];   // items: {item: {}} >> {item: [{}]}
+            }
+            clog(`totalCount: ${totalCount}[${numOfRows}]`);
+            clog('item.length', body.items.item.length);
+            await insertDATA(LAWD_CD, DEAL_YMD, body);
+        } else clog(`error(header) [${LAWD_CD}]:`, header);
     } catch (err) { clog(err); }
 }
 

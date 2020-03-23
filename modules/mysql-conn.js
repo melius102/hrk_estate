@@ -1,6 +1,7 @@
 // https://github.com/mysqljs/mysql#connection-options
 // const mysql = require('mysql2'); // normal version: mysql2/index.js
 const mysql = require('mysql2/promise'); // promise version: mysql2/promise.js
+const schedule = require('node-schedule');
 const { clog } = require('./util');
 
 let pool = mysql.createPool({
@@ -97,4 +98,21 @@ async function createTable(tableName) {
     } catch (err) { errMessage(err, "table"); }
 }
 
-module.exports = { pool, sqlAction, errMessage, sqlExecute, createTable };
+function setSchedule() {
+    let j = schedule.scheduleJob('0 1 * * *', async function () {
+        let date = new Date();
+        clog("do job of schedule", date);
+        // let month = ("0" + (date.getMonth() + 1)).slice(-2);
+        let month = ("0" + (date.getMonth() + 2)).slice(-2);
+        let DEAL_YMD = `${date.getFullYear()}-${month}-01`;
+
+        clog(DEAL_YMD);
+        let sql = "DELETE FROM queries WHERE DEAL_YMD=?";
+        let sqlVals = [DEAL_YMD];
+        let result = await sqlExecute(sql, sqlVals, "schedule");
+        if (result) clog(result[0]);
+    });
+    return j;
+}
+
+module.exports = { pool, sqlAction, errMessage, sqlExecute, createTable, setSchedule };

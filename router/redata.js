@@ -106,16 +106,7 @@ router.get('/data/:LAWD_CD/:DEAL_YMD/:pageNo/:numOfRows', async (req, res) => {
         });
         res.json(body);
 
-        // clog(body.items.item[0]);
-        // gov_openapi.getJSON(LAWD_CD, DEAL_YMD, pageNo, numOfRows, (err, json) => {
-        //     if (err) { res.send('error'); }
-        //     else {
-        //         let body = json.response.body;
-        //         clog(body.items.item[0]);
-        //         res.json(body);
-        //     }
-        // });
-    } else {
+    } else { // if not (dbState)
         gov_openapi.getJSON(LAWD_CD, DEAL_YMD, pageNo, numOfRows, (err, json) => {
             if (err) { res.send('error'); }
             else {
