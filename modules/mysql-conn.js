@@ -2,7 +2,7 @@
 // const mysql = require('mysql2'); // normal version: mysql2/index.js
 const mysql = require('mysql2/promise'); // promise version: mysql2/promise.js
 const schedule = require('node-schedule');
-const { clog } = require('./util');
+const { clog, LAWD_CDList, d2oKeys } = require('./util');
 
 let pool = mysql.createPool({
     host: process.env.mysqlhost,
@@ -98,15 +98,73 @@ async function createTable(tableName) {
     } catch (err) { errMessage(err, "table"); }
 }
 
+async function readItems(LAWD_CD, DEALYMD1, DEALYMD2, pageNo, numOfRows) {
+
+    // get totalCount
+    // ${DEAL_YMD.slice(0, -2)}-${DEAL_YMD.slice(-2)}-01
+    let sql = `SELECT COUNT(*) as totalCount FROM contracts${LAWD_CD}
+    WHERE cntr_date BETWEEN '${DEALYMD1}' AND '${DEALYMD2}'`;
+    let result = await sqlExecute(sql, [], 'query');
+    let { totalCount } = result[0][0];
+    // clog(totalCount);
+
+    // INNER JOIN road_names as rn : 483
+    // LEFT OUTER JOIN road_names as rn : 487
+    // let sql = `SELECT * FROM contracts${LAWD_CD} ORDER BY dn_cd`; // DESC
+    // DATE_FORMAT(ct.cntr_date, '%Y') AS cntr_year,
+    // DATE_FORMAT(ct.cntr_date, '%c') AS cntr_month,
+    // DATE_FORMAT(ct.cntr_date, '%e') AS cntr_day,
+    sql = `SELECT
+            FORMAT(ct.amount, 0) AS amount,
+            CONCAT(ct.cnst_year) AS cnst_year,
+            ct.cntr_date, ct.apt, ct.floor,
+            CONCAT(ct.area) AS area,
+            '${LAWD_CDList[LAWD_CD]}' as region_nm,
+            CONCAT(ct.region_cd) AS region_cd,
+            rn.road_nm,
+            CONCAT(ct.rn_cd) AS rn_cd,
+            ct.rn_sn_cd, ct.rn_bldg_mc, ct.rn_bldg_sc,
+            dn.dong_nm,
+            CONCAT(ct.dn_cd) AS dn_cd,
+            ct.dn_mc, ct.dn_sc, ct.dn_ln_cd, ct.ln 
+            FROM contracts${LAWD_CD} as ct
+            INNER JOIN dong_names as dn
+            ON ct.region_cd = dn.region_cd
+            AND ct.dn_cd = dn.dn_cd
+            LEFT OUTER JOIN road_names as rn
+            ON ct.region_cd = rn.region_cd
+            AND ct.rn_cd = rn.rn_cd
+            WHERE cntr_date BETWEEN '${DEALYMD1}' AND '${DEALYMD2}'
+            ORDER BY ct.dn_cd, ct.cntr_date, ct.area DESC
+            LIMIT ${(Number(pageNo) - 1) * Number(numOfRows)}, ${numOfRows}`;
+    let sqlVals = [];
+    result = await sqlExecute(sql, sqlVals, 'cntr');
+    let items = result[0];
+    // clog(items[0]);
+    // clog(items.length);
+    let body = { numOfRows, pageNo, totalCount, items: { item: [] } };
+
+    let keys = Object.keys(d2oKeys);
+    let values = Object.values(d2oKeys);
+    items.forEach(item => {
+        let newItem = {};
+        for (let i in keys) newItem[values[i]] = item[keys[i]];
+        body.items.item.push(newItem);
+    });
+
+    return body;
+}
+
 function setSchedule() {
     let j = schedule.scheduleJob('0 1 * * *', async function () {
-        let date = new Date();
+        let date = new Date(); // today
         clog("do job of schedule", date);
-        // let month = ("0" + (date.getMonth() + 1)).slice(-2);
-        let month = ("0" + (date.getMonth() + 2)).slice(-2);
+
+        date.setMonth(date.getMonth() + 1); // after 1 month
+        let month = ("0" + (date.getMonth() + 1)).slice(-2);
         let DEAL_YMD = `${date.getFullYear()}-${month}-01`;
 
-        clog(DEAL_YMD);
+        clog('delete DEAL_YMD', DEAL_YMD);
         let sql = "DELETE FROM queries WHERE DEAL_YMD=?";
         let sqlVals = [DEAL_YMD];
         let result = await sqlExecute(sql, sqlVals, "schedule");
@@ -115,4 +173,4 @@ function setSchedule() {
     return j;
 }
 
-module.exports = { pool, sqlAction, errMessage, sqlExecute, createTable, setSchedule };
+module.exports = { pool, sqlAction, errMessage, sqlExecute, createTable, readItems, setSchedule };

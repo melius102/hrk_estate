@@ -12,7 +12,8 @@ const initialState = {
 
     // date select
     LAWD_CD: null,
-    DEAL_YMD: null,
+    DEALYMD1: '1970-01-01',
+    DEALYMD2: '2070-12-30',
 
     // result load
     pageNo: 1,
@@ -31,7 +32,8 @@ if (rdev) {
     initialState.mapCode = initialState.provinceCode = "4100000000";
     initialState.regCode = initialState.districtCode = "4159000000";
     initialState.LAWD_CD = "41590";
-    initialState.DEAL_YMD = null;
+    initialState.DEALYMD1 = null;
+    initialState.DEALYMD2 = null;
 }
 
 function regionSelector(state = initialState, action) {
@@ -48,7 +50,8 @@ function regionSelector(state = initialState, action) {
     newState.villageOptions = state.villageOptions;
 
     newState.LAWD_CD = state.LAWD_CD;
-    newState.DEAL_YMD = state.DEAL_YMD;
+    newState.DEALYMD1 = state.DEALYMD1;
+    newState.DEALYMD2 = state.DEALYMD2;
 
     newState.pageNo = state.pageNo;
     newState.numOfRows = state.numOfRows;
@@ -111,7 +114,8 @@ function regionSelector(state = initialState, action) {
             return newState;
 
         case types.UPDATE_DATE:
-            newState.DEAL_YMD = action.DEAL_YMD;
+            newState.DEALYMD1 = action.DEALYMD1;
+            newState.DEALYMD2 = action.DEALYMD2;
             return newState;
 
         case types.PAGE_CHANGE:

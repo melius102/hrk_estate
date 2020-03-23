@@ -5,6 +5,10 @@ async function getList(depth, code) {
     return data;
 }
 
+function allItemHide() {
+    $(".item-table-wrap").hide();
+}
+
 const initCode = '0000000000';
 const nullCode = '';
 const seoulCode = '1100000000';
@@ -15,4 +19,4 @@ const districtCodes = ['1121500000', '1130500000', '1154500000'];
 const clog = console.log;
 const rdev = 0;
 
-export { getList, initCode, nullCode, seoulCode, districtCodes, rdev, clog };
+export { getList, initCode, nullCode, seoulCode, districtCodes, rdev, clog, allItemHide };

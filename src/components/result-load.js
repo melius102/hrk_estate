@@ -1,5 +1,5 @@
 import React from 'react';
-import { rdev, clog } from '../lib/util';
+import { rdev, clog, allItemHide } from '../lib/util';
 
 export default class ResultLoad extends React.Component {
     constructor(props) {
@@ -12,10 +12,11 @@ export default class ResultLoad extends React.Component {
     // www.code.go.kr
     hClickLoad(evt) {
         clog('hClickLoad');
-        if (!this.props.LAWD_CD || !this.props.DEAL_YMD) return;
-        let { LAWD_CD, DEAL_YMD, numOfRows } = this.props;
+        allItemHide();
+        if (!this.props.LAWD_CD || !this.props.DEALYMD1 || !this.props.DEALYMD2) return;
+        let { LAWD_CD, DEALYMD1, DEALYMD2, numOfRows } = this.props;
         let pageNo = 1;
-        fetch(`/redata/data/${LAWD_CD}/${DEAL_YMD}/${pageNo}/${numOfRows}`).then((response) => {
+        fetch(`/redata/data/${LAWD_CD}/${DEALYMD1}/${DEALYMD2}/${pageNo}/${numOfRows}`).then((response) => {
             // clog(response); // header
             return response.json();
         }).then((jsonBody) => {

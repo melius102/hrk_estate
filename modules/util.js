@@ -129,9 +129,11 @@ const d2oKeys = {
     cntr_year: '년',
     cntr_month: '월',
     cntr_day: '일',
+    cntr_date: '거래일자',
     apt: '아파트',
     floor: '층',
     area: '전용면적',
+    region_nm: '지역명',
     region_cd: '지역코드',
     road_nm: '도로명',
     rn_cd: '도로명코드',
@@ -146,14 +148,18 @@ const d2oKeys = {
     ln: '지번'
 }
 
-function validateDate(DEAL_YMD) {
+function validateDate(DEALYMD1, DEALYMD2 = null) {
     let res = false;
     let start = new Date('2010-01-01');
     let today = new Date(); // Today: Date.now() == (new Date()).getTime()
 
-    if (DEAL_YMD && /\d{6}/.test(DEAL_YMD)) {
-        let target = new Date(`${DEAL_YMD.slice(0, -2)}-${DEAL_YMD.slice(-2)}-01`);
+    if (DEALYMD1 && /\d{6}/.test(DEALYMD1) && DEALYMD2 == null) {
+        let target = new Date(`${DEALYMD1.slice(0, -2)}-${DEALYMD1.slice(-2)}-01`);
         if (today > target && target > start) res = true;
+    } else if (DEALYMD2 != null) {
+        let date1 = new Date(DEALYMD1);
+        let date2 = new Date(DEALYMD2);
+        if (!isNaN(date1) && !isNaN(date2)) res = true;
     }
     return res;
 }

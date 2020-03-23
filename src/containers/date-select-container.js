@@ -6,15 +6,16 @@ import { clog } from '../lib/util';
 
 const mapStateToProps = (state, ownProps) => {
     return {
-        DEAL_YMD: state.DEAL_YMD
+        DEALYMD1: state.DEALYMD1,
+        DEALYMD2: state.DEALYMD2
     };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
-        dpUpdateDate: (DEAL_YMD) => {
+        dpUpdateDate: (DEALYMD1, DEALYMD2) => {
             clog('dpUpdateDate');
-            return dispatch(actions.updateDate(DEAL_YMD));
+            return dispatch(actions.updateDate(DEALYMD1, DEALYMD2));
         }
     };
 }

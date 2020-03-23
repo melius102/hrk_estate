@@ -67,6 +67,7 @@ footer {
     text-align-last: center;
     background-color: white;
     border-bottom: 1px solid $main-color;
+    margin: 5px 10px;
 }
 
 
@@ -78,7 +79,6 @@ footer {
     @extend .rdev;
 
     select {
-        margin: 5px 10px;
         display: block;
         -webkit-appearance: none;
         border-radius: 0px;
@@ -92,11 +92,16 @@ footer {
 #date-picker {
     margin: 10px 0;
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     @extend .rdev;
 
     input {
         @extend .input-design;
+        @extend .rdev;
+    }
+
+    span {
         @extend .rdev;
     }
 }

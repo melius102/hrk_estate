@@ -1,5 +1,5 @@
 import React from 'react';
-import { rdev, clog } from '../lib/util';
+import { rdev, clog, allItemHide } from '../lib/util';
 
 export default class Pagination extends React.Component {
     constructor(props) {
@@ -29,11 +29,12 @@ export default class Pagination extends React.Component {
 
     // www.code.go.kr
     hPageChange(dpage) {
-        if (!this.props.LAWD_CD || !this.props.DEAL_YMD) return;
-        let { LAWD_CD, DEAL_YMD, pageNo, numOfRows } = this.props;
+        allItemHide();
+        if (!this.props.LAWD_CD || !this.props.DEALYMD1 || !this.props.DEALYMD2) return;
+        let { LAWD_CD, DEALYMD1, DEALYMD2, pageNo, numOfRows } = this.props;
         let newPageNo = Number(pageNo) + dpage;
         if (newPageNo < 1 || newPageNo > this.state.totalPage) return;
-        fetch(`/redata/data/${LAWD_CD}/${DEAL_YMD}/${newPageNo}/${numOfRows}`).then((response) => {
+        fetch(`/redata/data/${LAWD_CD}/${DEALYMD1}/${DEALYMD2}/${newPageNo}/${numOfRows}`).then((response) => {
             // clog(response); // header
             return response.json();
         }).then((jsonBody) => {

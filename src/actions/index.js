@@ -95,10 +95,10 @@ export const updateOptions = (districtOptions, villageOptions) => {
     }
 };
 
-export const updateDate = (DEAL_YMD) => {
+export const updateDate = (DEALYMD1, DEALYMD2) => {
     return {
         type: types.UPDATE_DATE,
-        DEAL_YMD
+        DEALYMD1, DEALYMD2
     };
 }
 
