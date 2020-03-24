@@ -22,14 +22,17 @@ router.get('/getlist/:depth/:code', (req, res) => {
     res.send(list);
 });
 
-router.get('/data/:LAWD_CD/:DEALYMD1/:DEALYMD2/:pageNo/:numOfRows', async (req, res) => {
+router.post('/data/:LAWD_CD/:DEALYMD1/:DEALYMD2/:pageNo/:numOfRows', async (req, res) => {
     let LAWD_CD = req.params.LAWD_CD;
     let DEALYMD1 = req.params.DEALYMD1;
     let DEALYMD2 = req.params.DEALYMD2;
     let pageNo = req.params.pageNo;
     let numOfRows = req.params.numOfRows;
 
+    let filters = req.body.filters;
+
     clog("data:", LAWD_CD, DEALYMD1, DEALYMD2, pageNo, numOfRows);
+    // clog('filters', filters);
 
     if (!validateDate(DEALYMD1, DEALYMD2)) {
         let body = { numOfRows, pageNo, totalCount: 0, items: { item: [] } };
@@ -52,7 +55,7 @@ router.get('/data/:LAWD_CD/:DEALYMD1/:DEALYMD2/:pageNo/:numOfRows', async (req, 
 
     let dbState = 1;
     if (dbState) {
-        let body = await readItems(LAWD_CD, DEALYMD1, DEALYMD2, pageNo, numOfRows);
+        let body = await readItems(LAWD_CD, DEALYMD1, DEALYMD2, pageNo, numOfRows, filters);
         res.json(body);
     } else {
         // gov_openapi.getJSON(LAWD_CD, DEAL_YMD, pageNo, numOfRows, (err, json) => {

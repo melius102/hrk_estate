@@ -34,7 +34,11 @@ export default class Pagination extends React.Component {
         let { LAWD_CD, DEALYMD1, DEALYMD2, pageNo, numOfRows } = this.props;
         let newPageNo = Number(pageNo) + dpage;
         if (newPageNo < 1 || newPageNo > this.state.totalPage) return;
-        fetch(`/redata/data/${LAWD_CD}/${DEALYMD1}/${DEALYMD2}/${newPageNo}/${numOfRows}`).then((response) => {
+        fetch(`/redata/data/${LAWD_CD}/${DEALYMD1}/${DEALYMD2}/${newPageNo}/${numOfRows}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ filters: this.props.filters })
+        }).then((response) => {
             // clog(response); // header
             return response.json();
         }).then((jsonBody) => {
@@ -62,7 +66,7 @@ export default class Pagination extends React.Component {
         else $("#ch-right").removeClass("end");
 
         if (rdev) {
-            setTimeout(() => $('#search-btn').trigger('click'), 500);
+            // setTimeout(() => $('#search-btn').trigger('click'), 500);
         }
     }
 

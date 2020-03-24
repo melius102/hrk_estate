@@ -25,15 +25,24 @@ const initialState = {
     regCode: nullCode,
 
     // item list
-    itemListData: null
+    itemListData: null,
+
+    // filters
+    filters: []
 };
 
 if (rdev) {
-    initialState.mapCode = initialState.provinceCode = "4100000000";
-    initialState.regCode = initialState.districtCode = "4159000000";
-    initialState.LAWD_CD = "41590";
-    initialState.DEALYMD1 = null;
-    initialState.DEALYMD2 = null;
+    // initialState.mapCode = initialState.provinceCode = "4100000000";
+    // initialState.regCode = initialState.districtCode = "4159000000";
+    // initialState.LAWD_CD = "41590";
+    // initialState.DEALYMD1 = '1970-01-01';
+    // initialState.DEALYMD2 = '2070-12-30';
+    initialState.filters = [
+        { type: 'v-name', value: '서초동' },
+        { type: 'apt', value: '푸르지오' },
+        { type: 'area', value: '1000 ~ 2000' },
+        { type: 'amount', value: '1000 ~ 2000' }
+    ];
 }
 
 function regionSelector(state = initialState, action) {
@@ -61,6 +70,8 @@ function regionSelector(state = initialState, action) {
     newState.regCode = state.regCode;
 
     newState.itemListData = state.itemListData;
+
+    newState.filters = state.filters;
 
     switch (action.type) {
         case types.UPDATE_MAPCODE:
@@ -131,6 +142,10 @@ function regionSelector(state = initialState, action) {
                 newState.pageNo = 1;
                 newState.totalCount = 1;
             }
+            return newState;
+
+        case types.UPDATE_FILTERS:
+            newState.filters = action.filters;
             return newState;
 
         default:

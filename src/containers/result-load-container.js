@@ -9,7 +9,8 @@ const mapStateToProps = (state, ownProps) => {
         DEALYMD1: state.DEALYMD1,
         DEALYMD2: state.DEALYMD2,
         pageNo: state.pageNo,
-        numOfRows: state.numOfRows
+        numOfRows: state.numOfRows,
+        filters: state.filters
     };
 };
 

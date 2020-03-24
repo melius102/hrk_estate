@@ -98,15 +98,50 @@ async function createTable(tableName) {
     } catch (err) { errMessage(err, "table"); }
 }
 
-async function readItems(LAWD_CD, DEALYMD1, DEALYMD2, pageNo, numOfRows) {
+async function readItems(LAWD_CD, DEALYMD1, DEALYMD2, pageNo, numOfRows, filters) {
 
     // get totalCount
     // ${DEAL_YMD.slice(0, -2)}-${DEAL_YMD.slice(-2)}-01
-    let sql = `SELECT COUNT(*) as totalCount FROM contracts${LAWD_CD}
-    WHERE cntr_date BETWEEN '${DEALYMD1}' AND '${DEALYMD2}'`;
-    let result = await sqlExecute(sql, [], 'query');
+    let sqlSelect = `SELECT COUNT(*) as totalCount `;
+    let sqlFrom = `FROM contracts${LAWD_CD} as ct
+                INNER JOIN dong_names as dn
+                ON ct.region_cd = dn.region_cd
+                AND ct.dn_cd = dn.dn_cd
+                LEFT OUTER JOIN road_names as rn
+                ON ct.region_cd = rn.region_cd
+                AND ct.rn_cd = rn.rn_cd `;
+    let sqlWhere = `WHERE cntr_date BETWEEN '${DEALYMD1}' AND '${DEALYMD2}' `;
+
+    let sqlVName = [];
+    let sqlApt = [];
+    let sqlArea = [];
+    let sqlAmount = [];
+    filters.forEach((v, i) => {
+        if (v.type == 'v-name') {
+            sqlVName.push(` dong_nm like '%${v.value}%' `);
+            sqlVName.push(` road_nm like '%${v.value}%' `);
+        } else if (v.type == 'apt') {
+            sqlApt.push(` apt like '%${v.value}%' `);
+        } else if (v.type == 'area') {
+            let area = v.value.split(' ~ ');
+            sqlArea.push(` area BETWEEN '${area[0]}' AND '${area[1]}' `);
+        } else if (v.type == 'amount') {
+            let amount = v.value.split(' ~ ');
+            sqlAmount.push(` amount BETWEEN '${amount[0]}' AND '${amount[1]}' `);
+        }
+    });
+    if (sqlVName.length) sqlWhere += `AND (${sqlVName.join('OR')}) `;
+    if (sqlApt.length) sqlWhere += `AND (${sqlApt.join('OR')}) `;
+    if (sqlArea.length) sqlWhere += `AND (${sqlArea.join('OR')}) `;
+    if (sqlAmount.length) sqlWhere += `AND (${sqlAmount.join('OR')}) `;
+    // sqlWhere += `ORDER BY ct.dn_cd, ct.cntr_date, ct.area DESC
+    // LIMIT ${(Number(pageNo) - 1) * Number(numOfRows)}, ${numOfRows}`;
+
+    let sql = sqlSelect + sqlFrom + sqlWhere;
+    // clog(sql);
+    let result = await sqlExecute(sql, [], 'cntr');
     let { totalCount } = result[0][0];
-    // clog(totalCount);
+    clog('totalCount', totalCount);
 
     // INNER JOIN road_names as rn : 483
     // LEFT OUTER JOIN road_names as rn : 487
@@ -114,34 +149,26 @@ async function readItems(LAWD_CD, DEALYMD1, DEALYMD2, pageNo, numOfRows) {
     // DATE_FORMAT(ct.cntr_date, '%Y') AS cntr_year,
     // DATE_FORMAT(ct.cntr_date, '%c') AS cntr_month,
     // DATE_FORMAT(ct.cntr_date, '%e') AS cntr_day,
-    sql = `SELECT
+    sqlSelect = `SELECT
             FORMAT(ct.amount, 0) AS amount,
             CONCAT(ct.cnst_year) AS cnst_year,
             ct.cntr_date, ct.apt, ct.floor,
             CONCAT(ct.area) AS area,
             '${LAWD_CDList[LAWD_CD]}' as region_nm,
             CONCAT(ct.region_cd) AS region_cd,
-            rn.road_nm,
-            CONCAT(ct.rn_cd) AS rn_cd,
+            rn.road_nm, CONCAT(ct.rn_cd) AS rn_cd,
             ct.rn_sn_cd, ct.rn_bldg_mc, ct.rn_bldg_sc,
-            dn.dong_nm,
-            CONCAT(ct.dn_cd) AS dn_cd,
-            ct.dn_mc, ct.dn_sc, ct.dn_ln_cd, ct.ln 
-            FROM contracts${LAWD_CD} as ct
-            INNER JOIN dong_names as dn
-            ON ct.region_cd = dn.region_cd
-            AND ct.dn_cd = dn.dn_cd
-            LEFT OUTER JOIN road_names as rn
-            ON ct.region_cd = rn.region_cd
-            AND ct.rn_cd = rn.rn_cd
-            WHERE cntr_date BETWEEN '${DEALYMD1}' AND '${DEALYMD2}'
-            ORDER BY ct.dn_cd, ct.cntr_date, ct.area DESC
+            dn.dong_nm, CONCAT(ct.dn_cd) AS dn_cd,
+            ct.dn_mc, ct.dn_sc, ct.dn_ln_cd, ct.ln `;
+
+    sqlWhere += `ORDER BY ct.dn_cd, ct.cntr_date, ct.area DESC
             LIMIT ${(Number(pageNo) - 1) * Number(numOfRows)}, ${numOfRows}`;
-    let sqlVals = [];
-    result = await sqlExecute(sql, sqlVals, 'cntr');
+
+    sql = sqlSelect + sqlFrom + sqlWhere;
+    // clog(sql);
+    result = await sqlExecute(sql, [], 'cntr');
     let items = result[0];
-    // clog(items[0]);
-    // clog(items.length);
+    clog(items.length);
     let body = { numOfRows, pageNo, totalCount, items: { item: [] } };
 
     let keys = Object.keys(d2oKeys);

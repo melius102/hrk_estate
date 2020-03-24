@@ -10,6 +10,7 @@ p,
 i,
 svg,
 span,
+label,
 header,
 footer,
 input,
@@ -113,11 +114,11 @@ footer {
     @extend .rdev;
 
     button {
+        margin: 1px;
         background-color: $main-color;
         color: white;
         height: 40px;
         width: 200px;
-        border-right: 0.2px solid white;
         @extend .rdev;
     }
 }
@@ -233,6 +234,95 @@ footer {
 
         span {
             font-size: $p-font-size;
+            @extend .rdev;
+        }
+    }
+}
+
+
+#filter-wrap {
+    display: none;
+    max-width: 700px;
+    margin: 0 auto 20px;
+    @extend .rdev;
+
+    #filter-radios {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        background-color: transparentize($main-color, 0.7);
+        @extend .rdev;
+
+        .radio-set {
+            margin: 5px;
+            @extend .rdev;
+
+            input {
+                margin: 0 5px;
+                @extend .rdev;
+            }
+
+            label {
+                @extend .rdev;
+            }
+        }
+    }
+
+    #filter-select {
+        padding: 5px;
+        text-align: center;
+        @extend .rdev;
+
+        #filter-sel0,
+        #filter-sel1 {
+            @extend .rdev;
+        }
+
+        input {
+            padding: 5px;
+            text-align: center;
+            background-color: white;
+            @extend .rdev;
+            border-bottom: 1px solid $main-color;
+        }
+
+        button {
+            padding: 5px;
+            margin: 10px;
+            width: 80px;
+            background-color: $main-color;
+            color: white;
+            @extend .rdev;
+        }
+
+        span {
+            padding: 5px;
+            @extend .rdev;
+        }
+    }
+
+    #filter-box {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        border: 1px solid $main-color;
+
+        .filter-item {
+            margin: 10px;
+            @extend .rdev;
+            background-color: transparentize($main-color, 0.7);
+            border-left: 1px solid $main-color;
+        }
+
+        span {
+            @extend .rdev;
+            padding: 0 5px;
+        }
+
+        i {
+            background-color: $main-color;
+            color: $sub-color;
+            padding: 2px;
             @extend .rdev;
         }
     }

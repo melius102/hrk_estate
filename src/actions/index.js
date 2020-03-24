@@ -113,3 +113,8 @@ export const updateItemList = (itemListData) => ({
     type: types.UPDATE_ITEM_LIST,
     itemListData
 });
+
+export const updateFilters = (filters) => ({
+    type: types.UPDATE_FILTERS,
+    filters
+});

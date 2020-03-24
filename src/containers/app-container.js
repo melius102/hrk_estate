@@ -7,6 +7,7 @@ import MapsContainer from './maps-container';
 import RegionSelectContainer from './region-select-container';
 import DateSelectContainer from './date-select-container';
 import ResultLoadContainer from './result-load-container';
+import FilterContainer from './filter-container';
 import ItemListContainer from './item-list-container';
 import PaginationContainer from './pagination-container';
 import { clog } from '../lib/util';
@@ -22,6 +23,7 @@ export default class App extends React.Component {
                 <RegionSelectContainer provinceOptions={this.props.provinceOptions} />
                 <DateSelectContainer />
                 <ResultLoadContainer />
+                <FilterContainer />
                 <ItemListContainer />
                 <PaginationContainer />
                 <footer><p>{footerText}</p></footer>
