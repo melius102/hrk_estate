@@ -12,7 +12,8 @@ export default class Filter extends React.Component {
             pholder: "예) 서초동",
             options: [],
             OptionVal1: '',
-            OptionVal2: ''
+            OptionVal2: '',
+            readyFetch: 0
         };
         this.hChange = this.hChange.bind(this);
         this.hRemove = this.hRemove.bind(this);
@@ -31,13 +32,15 @@ export default class Filter extends React.Component {
             newState.display1 = 'initial';
         }
 
-        if (!props.readyFetch) {
+        if (!props.readyFetch || (props.readyFetch == 1 && props.readyFetch != state.readyFetch)) {
             newState.radioVal = null;
             newState.display0 = "initial";
             newState.display1 = "none";
+            newState.options = [];
             newState.OptionVal1 = '';
             newState.OptionVal2 = '';
         }
+        newState.readyFetch = props.readyFetch;
         return newState;
     }
 

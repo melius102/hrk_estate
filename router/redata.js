@@ -73,11 +73,7 @@ router.post('/data/:LAWD_CD/:DEALYMD1/:DEALYMD2/:pageNo/:numOfRows', async (req,
 });
 
 router.get('/option/:opType/:LAWD_CD/:DEALYMD1/:DEALYMD2', async (req, res) => {
-    let opType = req.params.opType;
-    let LAWD_CD = req.params.LAWD_CD;
-    let DEALYMD1 = req.params.DEALYMD1;
-    let DEALYMD2 = req.params.DEALYMD2;
-
+    let { opType, LAWD_CD, DEALYMD1, DEALYMD2 } = req.params;
     if (!validateDate(DEALYMD1, DEALYMD2)) {
         res.json({ options: [] });
         return;

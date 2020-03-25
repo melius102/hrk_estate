@@ -19,7 +19,7 @@ const initialState = {
     pageNo: 1,
     numOfRows: 20,
     totalCount: 1,
-    readyFetch: false,
+    readyFetch: 0,
 
     // map
     mapCode: initCode,
@@ -155,9 +155,14 @@ function regionSelector(state = initialState, action) {
     }
 
     if (newState.LAWD_CD && newState.DEALYMD1 && newState.DEALYMD2 && newState.pageNo && newState.numOfRows) {
-        newState.readyFetch = true;
+        let oldTarget = `${state.LAWD_CD}${state.DEALYMD1}${state.DEALYMD2}`;
+        let newTarget = `${newState.LAWD_CD}${newState.DEALYMD1}${newState.DEALYMD2}`;
+        if (newTarget != oldTarget) {
+            newState.readyFetch = 1; // 0
+            newState.filters = [];
+        } else newState.readyFetch = 2;
     } else {
-        newState.readyFetch = false;
+        newState.readyFetch = 0;
         newState.filters = [];
     }
     return newState;

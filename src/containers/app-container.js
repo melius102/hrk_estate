@@ -8,6 +8,7 @@ import RegionSelectContainer from './region-select-container';
 import DateSelectContainer from './date-select-container';
 import ResultLoadContainer from './result-load-container';
 import FilterContainer from './filter-container';
+import ResPlotContainer from './res-plot-container';
 import ItemListContainer from './item-list-container';
 import PaginationContainer from './pagination-container';
 import { clog } from '../lib/util';
@@ -24,6 +25,7 @@ export default class App extends React.Component {
                 <DateSelectContainer />
                 <ResultLoadContainer />
                 <FilterContainer />
+                <ResPlotContainer />
                 <ItemListContainer />
                 <PaginationContainer />
                 <footer><p>{footerText}</p></footer>
