@@ -19,6 +19,7 @@ const initialState = {
     pageNo: 1,
     numOfRows: 20,
     totalCount: 1,
+    readyFetch: false,
 
     // map
     mapCode: initCode,
@@ -46,32 +47,33 @@ if (rdev) {
 }
 
 function regionSelector(state = initialState, action) {
-    clog('reducer');
+    clog('reducer', action);
     // clog('state', state);
     // clog('action', action);
-    let newState = {};
+    let newState = { ...state };
 
-    newState.provinceCode = state.provinceCode;
-    newState.districtCode = state.districtCode;
-    newState.villageCode = state.villageCode;
+    // newState.provinceCode = state.provinceCode;
+    // newState.districtCode = state.districtCode;
+    // newState.villageCode = state.villageCode;
 
-    newState.districtOptions = state.districtOptions;
-    newState.villageOptions = state.villageOptions;
+    // newState.districtOptions = state.districtOptions;
+    // newState.villageOptions = state.villageOptions;
 
-    newState.LAWD_CD = state.LAWD_CD;
-    newState.DEALYMD1 = state.DEALYMD1;
-    newState.DEALYMD2 = state.DEALYMD2;
+    // newState.LAWD_CD = state.LAWD_CD;
+    // newState.DEALYMD1 = state.DEALYMD1;
+    // newState.DEALYMD2 = state.DEALYMD2;
 
-    newState.pageNo = state.pageNo;
-    newState.numOfRows = state.numOfRows;
-    newState.totalCount = state.totalCount;
+    // newState.pageNo = state.pageNo;
+    // newState.numOfRows = state.numOfRows;
+    // newState.totalCount = state.totalCount;
+    // newState.readyFetch = state.readyFetch;
 
-    newState.mapCode = state.mapCode;
-    newState.regCode = state.regCode;
+    // newState.mapCode = state.mapCode;
+    // newState.regCode = state.regCode;
 
-    newState.itemListData = state.itemListData;
+    // newState.itemListData = state.itemListData;
 
-    newState.filters = state.filters;
+    // newState.filters = state.filters;
 
     switch (action.type) {
         case types.UPDATE_MAPCODE:
@@ -117,21 +119,21 @@ function regionSelector(state = initialState, action) {
             }
 
             newState.LAWD_CD = action.LAWD_CD;
-            return newState;
+            break;
 
         case types.UPDATE_OPTIONS:
             newState.districtOptions = action.districtOptions;
             newState.villageOptions = action.villageOptions;
-            return newState;
+            break;
 
         case types.UPDATE_DATE:
             newState.DEALYMD1 = action.DEALYMD1;
             newState.DEALYMD2 = action.DEALYMD2;
-            return newState;
+            break;
 
         case types.PAGE_CHANGE:
             newState.pageNo = action.pageNo;
-            return newState;
+            break;
 
         case types.UPDATE_ITEM_LIST:
             newState.itemListData = action.itemListData;
@@ -142,15 +144,23 @@ function regionSelector(state = initialState, action) {
                 newState.pageNo = 1;
                 newState.totalCount = 1;
             }
-            return newState;
+            break;
 
         case types.UPDATE_FILTERS:
             newState.filters = action.filters;
-            return newState;
+            break;
 
         default:
-            return newState;
+            break;
     }
+
+    if (newState.LAWD_CD && newState.DEALYMD1 && newState.DEALYMD2 && newState.pageNo && newState.numOfRows) {
+        newState.readyFetch = true;
+    } else {
+        newState.readyFetch = false;
+        newState.filters = [];
+    }
+    return newState;
 }
 
 export default regionSelector;

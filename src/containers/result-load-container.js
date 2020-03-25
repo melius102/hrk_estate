@@ -10,7 +10,8 @@ const mapStateToProps = (state, ownProps) => {
         DEALYMD2: state.DEALYMD2,
         pageNo: state.pageNo,
         numOfRows: state.numOfRows,
-        filters: state.filters
+        filters: state.filters,
+        readyFetch: state.readyFetch
     };
 };
 

@@ -28,6 +28,12 @@ export default class ItemList extends React.Component {
             </div>
         );
     }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (!this.props.readyFetch && this.props.itemListData) {
+            this.props.dpUpdateItemList(null);
+        }
+    }
 }
 
 ItemList.defaultProps = {

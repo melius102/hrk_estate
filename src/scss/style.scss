@@ -286,6 +286,17 @@ footer {
             border-bottom: 1px solid $main-color;
         }
 
+        select {
+            -webkit-appearance: none;
+            border-radius: 0px;
+            min-width: 150px;
+            padding: 5px;
+            text-align-last: center;
+            background-color: white;
+            border-bottom: 1px solid $main-color;
+            @extend .rdev;
+        }
+
         button {
             padding: 5px;
             margin: 10px;

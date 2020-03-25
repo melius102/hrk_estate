@@ -1,6 +1,6 @@
 const path = require('path');
 const express = require("express");
-const { pool, errMessage, sqlExecute, readItems } = require('../modules/mysql-conn');
+const { sqlExecute, readItems, readOptions } = require('../modules/mysql-conn');
 const { clog, odfKeys, d2oKeys, validateDate } = require('../modules/util');
 const { Worker, isMainThread } = require('worker_threads');
 
@@ -70,6 +70,21 @@ router.post('/data/:LAWD_CD/:DEALYMD1/:DEALYMD2/:pageNo/:numOfRows', async (req,
         let body = { numOfRows, pageNo, totalCount: 0, items: { item: [] } };
         res.json(body);
     }
+});
+
+router.get('/option/:opType/:LAWD_CD/:DEALYMD1/:DEALYMD2', async (req, res) => {
+    let opType = req.params.opType;
+    let LAWD_CD = req.params.LAWD_CD;
+    let DEALYMD1 = req.params.DEALYMD1;
+    let DEALYMD2 = req.params.DEALYMD2;
+
+    if (!validateDate(DEALYMD1, DEALYMD2)) {
+        res.json({ options: [] });
+        return;
+    }
+
+    let options = await readOptions(LAWD_CD, DEALYMD1, DEALYMD2, opType);
+    res.json({ options });
 });
 
 router.get('/readMonth/:DEAL_YMD', async (req, res) => {

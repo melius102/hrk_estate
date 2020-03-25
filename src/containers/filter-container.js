@@ -5,7 +5,13 @@ import { clog } from '../lib/util';
 
 
 const mapStateToProps = (state, ownProps) => {
-    return { filters: state.filters };
+    return {
+        LAWD_CD: state.LAWD_CD,
+        DEALYMD1: state.DEALYMD1,
+        DEALYMD2: state.DEALYMD2,
+        filters: state.filters,
+        readyFetch: state.readyFetch
+    };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {

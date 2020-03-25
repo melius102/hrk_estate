@@ -57,10 +57,10 @@ async function createTable(tableName) {
 
     // CREATE TABLES  IF NOT EXISTS table_name
     let sql = `SELECT EXISTS (
-            SELECT 1 FROM information_schema.tables
-            WHERE table_schema = '${process.env.mysqldb}'
-            AND table_name = '${tableName}'
-            ) AS exflag`;
+        SELECT 1 FROM information_schema.tables
+        WHERE table_schema = '${process.env.mysqldb}'
+        AND table_name = '${tableName}'
+        ) AS exflag`;
     let result;
 
     try {
@@ -68,24 +68,24 @@ async function createTable(tableName) {
         if (!result[0][0].exflag) {
             // create table
             sql = `CREATE TABLE ${tableName} (
-                    amount int(10) unsigned NOT NULL,
-                    cnst_year year(4) NOT NULL,
-                    cntr_date date NOT NULL,
-                    apt varchar(255) NOT NULL,
-                    floor varchar(45) NOT NULL,
-                    area float NOT NULL,
-                    region_cd int(5) unsigned zerofill NOT NULL,
-                    rn_cd int(7) unsigned zerofill NOT NULL,
-                    rn_sn_cd int(2) unsigned zerofill NOT NULL,
-                    rn_bldg_mc int(5) unsigned zerofill NOT NULL,
-                    rn_bldg_sc int(5) unsigned zerofill NOT NULL,
-                    dn_cd int(5) unsigned zerofill NOT NULL,
-                    dn_mc int(4) unsigned zerofill NOT NULL,
-                    dn_sc int(4) unsigned zerofill NOT NULL,
-                    dn_ln_cd int(1) unsigned zerofill NOT NULL,
-                    ln int(10) unsigned NOT NULL,
-                    PRIMARY KEY (amount,cnst_year,cntr_date,apt,floor,area,region_cd,rn_cd,rn_sn_cd,rn_bldg_mc,rn_bldg_sc)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8`;
+                amount int(10) unsigned NOT NULL,
+                cnst_year year(4) NOT NULL,
+                cntr_date date NOT NULL,
+                apt varchar(255) NOT NULL,
+                floor varchar(45) NOT NULL,
+                area float NOT NULL,
+                region_cd int(5) unsigned zerofill NOT NULL,
+                rn_cd int(7) unsigned zerofill NOT NULL,
+                rn_sn_cd int(2) unsigned zerofill NOT NULL,
+                rn_bldg_mc int(5) unsigned zerofill NOT NULL,
+                rn_bldg_sc int(5) unsigned zerofill NOT NULL,
+                dn_cd int(5) unsigned zerofill NOT NULL,
+                dn_mc int(4) unsigned zerofill NOT NULL,
+                dn_sc int(4) unsigned zerofill NOT NULL,
+                dn_ln_cd int(1) unsigned zerofill NOT NULL,
+                ln int(10) unsigned NOT NULL,
+                PRIMARY KEY (amount,cnst_year,cntr_date,apt,floor,area,region_cd,rn_cd,rn_sn_cd,rn_bldg_mc,rn_bldg_sc)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8`;
 
             result = await pool.execute(sql);
             // clog(result[0].affectedRows); // serverStatus: 2;
@@ -104,12 +104,12 @@ async function readItems(LAWD_CD, DEALYMD1, DEALYMD2, pageNo, numOfRows, filters
     // ${DEAL_YMD.slice(0, -2)}-${DEAL_YMD.slice(-2)}-01
     let sqlSelect = `SELECT COUNT(*) as totalCount `;
     let sqlFrom = `FROM contracts${LAWD_CD} as ct
-                INNER JOIN dong_names as dn
-                ON ct.region_cd = dn.region_cd
-                AND ct.dn_cd = dn.dn_cd
-                LEFT OUTER JOIN road_names as rn
-                ON ct.region_cd = rn.region_cd
-                AND ct.rn_cd = rn.rn_cd `;
+        INNER JOIN dong_names as dn
+        ON ct.region_cd = dn.region_cd
+        AND ct.dn_cd = dn.dn_cd
+        LEFT OUTER JOIN road_names as rn
+        ON ct.region_cd = rn.region_cd
+        AND ct.rn_cd = rn.rn_cd `;
     let sqlWhere = `WHERE cntr_date BETWEEN '${DEALYMD1}' AND '${DEALYMD2}' `;
 
     let sqlVName = [];
@@ -124,9 +124,10 @@ async function readItems(LAWD_CD, DEALYMD1, DEALYMD2, pageNo, numOfRows, filters
             sqlApt.push(` apt like '%${v.value}%' `);
         } else if (v.type == 'area') {
             let area = v.value.split(' ~ ');
-            sqlArea.push(` area BETWEEN '${area[0]}' AND '${area[1]}' `);
+            sqlArea.push(` area BETWEEN ${area[0]}-0.0001 AND ${area[1]}+0.0001 `);
         } else if (v.type == 'amount') {
             let amount = v.value.split(' ~ ');
+            amount = amount.map(v => v.replace(/,/g, ""));
             sqlAmount.push(` amount BETWEEN '${amount[0]}' AND '${amount[1]}' `);
         }
     });
@@ -150,19 +151,19 @@ async function readItems(LAWD_CD, DEALYMD1, DEALYMD2, pageNo, numOfRows, filters
     // DATE_FORMAT(ct.cntr_date, '%c') AS cntr_month,
     // DATE_FORMAT(ct.cntr_date, '%e') AS cntr_day,
     sqlSelect = `SELECT
-            FORMAT(ct.amount, 0) AS amount,
-            CONCAT(ct.cnst_year) AS cnst_year,
-            ct.cntr_date, ct.apt, ct.floor,
-            CONCAT(ct.area) AS area,
-            '${LAWD_CDList[LAWD_CD]}' as region_nm,
-            CONCAT(ct.region_cd) AS region_cd,
-            rn.road_nm, CONCAT(ct.rn_cd) AS rn_cd,
-            ct.rn_sn_cd, ct.rn_bldg_mc, ct.rn_bldg_sc,
-            dn.dong_nm, CONCAT(ct.dn_cd) AS dn_cd,
-            ct.dn_mc, ct.dn_sc, ct.dn_ln_cd, ct.ln `;
+        FORMAT(ct.amount, 0) AS amount,
+        CONCAT(ct.cnst_year) AS cnst_year,
+        ct.cntr_date, ct.apt, ct.floor,
+        CONCAT(ct.area) AS area,
+        '${LAWD_CDList[LAWD_CD]}' as region_nm,
+        CONCAT(ct.region_cd) AS region_cd,
+        rn.road_nm, CONCAT(ct.rn_cd) AS rn_cd,
+        ct.rn_sn_cd, ct.rn_bldg_mc, ct.rn_bldg_sc,
+        dn.dong_nm, CONCAT(ct.dn_cd) AS dn_cd,
+        ct.dn_mc, ct.dn_sc, ct.dn_ln_cd, ct.ln `;
 
     sqlWhere += `ORDER BY ct.dn_cd, ct.cntr_date, ct.area DESC
-            LIMIT ${(Number(pageNo) - 1) * Number(numOfRows)}, ${numOfRows}`;
+        LIMIT ${(Number(pageNo) - 1) * Number(numOfRows)}, ${numOfRows}`;
 
     sql = sqlSelect + sqlFrom + sqlWhere;
     // clog(sql);
@@ -180,6 +181,37 @@ async function readItems(LAWD_CD, DEALYMD1, DEALYMD2, pageNo, numOfRows, filters
     });
 
     return body;
+}
+
+async function readOptions(LAWD_CD, DEALYMD1, DEALYMD2, opType) {
+    let sqlSelect = "SELECT DISTINCT ";
+    if (opType == 'v-name') sqlSelect += `dn.dong_nm as opt ` // rn.road_nm
+    else if (opType == 'apt') sqlSelect += `ct.apt as opt `;
+    else if (opType == 'area') sqlSelect += `CONCAT(ct.area) AS opt `;
+    else if (opType == 'amount') sqlSelect += `FORMAT(ct.amount, 0) AS opt `;
+
+    let sqlFrom = `FROM contracts${LAWD_CD} as ct
+        INNER JOIN dong_names as dn
+        ON ct.region_cd = dn.region_cd
+        AND ct.dn_cd = dn.dn_cd
+        LEFT OUTER JOIN road_names as rn
+        ON ct.region_cd = rn.region_cd
+        AND ct.rn_cd = rn.rn_cd `;
+
+    let sqlWhere = `WHERE cntr_date BETWEEN '${DEALYMD1}' AND '${DEALYMD2}' ORDER BY `;
+    if (opType == 'v-name') sqlWhere += `opt `; // dn.dong_nm, rn.road_nm
+    else if (opType == 'apt') sqlWhere += `opt `;
+    else if (opType == 'area') sqlWhere += `ct.area `;
+    else if (opType == 'amount') sqlWhere += `ct.amount `;
+
+    let sql = sqlSelect + sqlFrom + sqlWhere;
+    // clog(sql);
+    let options = [];
+    let result = await sqlExecute(sql, [], 'cntr');
+    if (result[0] instanceof Array) {
+        result[0].forEach(v => options.push(v.opt));
+    }
+    return options;
 }
 
 function setSchedule() {
@@ -200,4 +232,8 @@ function setSchedule() {
     return j;
 }
 
-module.exports = { pool, sqlAction, errMessage, sqlExecute, createTable, readItems, setSchedule };
+module.exports = {
+    pool, sqlAction, errMessage,
+    sqlExecute, createTable, readItems,
+    setSchedule, readOptions
+};

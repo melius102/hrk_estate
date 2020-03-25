@@ -4,9 +4,27 @@ import { rdev, clog, allItemHide } from '../lib/util';
 export default class ResultLoad extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            displayClear: "none",
+            displaySearch: "none",
+            displayFilter: "none"
+        };
+
         this.hClickSearch = this.hClickSearch.bind(this);
         this.hClickFilter = this.hClickFilter.bind(this);
         this.hClickClear = this.hClickClear.bind(this);
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        let newState = { ...state };
+        if (props.readyFetch) {
+            newState.displaySearch = 'initial';
+            newState.displayFilter = 'initial';
+        } else {
+            newState.displaySearch = 'none';
+            newState.displayFilter = 'none';
+        }
+        return newState;
     }
 
     // componentDidMount() { }
@@ -43,11 +61,15 @@ export default class ResultLoad extends React.Component {
     render() {
         return (
             <div id="control-btns">
-                <button id="search-btn" onClick={this.hClickSearch}>검색</button>
-                <button id="filter-btn" onClick={this.hClickFilter}>필터</button>
-                <button id="clear-btn" onClick={this.hClickClear}>지우기</button>
+                <button id="search-btn" style={{ display: this.state.displaySearch }} onClick={this.hClickSearch}>검색</button>
+                <button id="filter-btn" style={{ display: this.state.displayFilter }} onClick={this.hClickFilter}>필터</button>
+                <button id="clear-btn" style={{ display: this.state.displayClear }} onClick={this.hClickClear}>지우기</button>
             </div>
         );
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        // if (!this.props.readyFetch) $('#filter-wrap').hide();
     }
 
     componentDidMount() {
