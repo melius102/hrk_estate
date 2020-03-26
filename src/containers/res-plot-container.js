@@ -5,7 +5,7 @@ import { clog } from '../lib/util';
 
 const mapStateToProps = (state) => {
     return {
-        readyFetch: state.readyFetch
+        itemListData: state.itemListData
     };
 };
 

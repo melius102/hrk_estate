@@ -26,8 +26,8 @@ export default class App extends React.Component {
                 <ResultLoadContainer />
                 <FilterContainer />
                 <ResPlotContainer />
-                <ItemListContainer />
                 <PaginationContainer />
+                <ItemListContainer />
                 <footer><p>{footerText}</p></footer>
             </React.Fragment>
         );

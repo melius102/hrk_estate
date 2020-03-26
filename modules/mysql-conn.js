@@ -100,86 +100,154 @@ async function createTable(tableName) {
 
 async function readItems(LAWD_CD, DEALYMD1, DEALYMD2, pageNo, numOfRows, filters) {
 
-    // get totalCount
-    // ${DEAL_YMD.slice(0, -2)}-${DEAL_YMD.slice(-2)}-01
-    let sqlSelect = `SELECT COUNT(*) as totalCount `;
-    let sqlFrom = `FROM contracts${LAWD_CD} as ct
-        INNER JOIN dong_names as dn
-        ON ct.region_cd = dn.region_cd
-        AND ct.dn_cd = dn.dn_cd
-        LEFT OUTER JOIN road_names as rn
-        ON ct.region_cd = rn.region_cd
-        AND ct.rn_cd = rn.rn_cd `;
-    let sqlWhere = `WHERE cntr_date BETWEEN '${DEALYMD1}' AND '${DEALYMD2}' `;
+    let body
+    if (numOfRows == 'all') {
 
-    let sqlVName = [];
-    let sqlApt = [];
-    let sqlArea = [];
-    let sqlAmount = [];
-    filters.forEach((v, i) => {
-        if (v.type == 'v-name') {
-            sqlVName.push(` dong_nm like '%${v.value}%' `);
-            sqlVName.push(` road_nm like '%${v.value}%' `);
-        } else if (v.type == 'apt') {
-            sqlApt.push(` apt like '%${v.value}%' `);
-        } else if (v.type == 'area') {
-            let area = v.value.split(' ~ ');
-            sqlArea.push(` area BETWEEN ${area[0]}-0.0001 AND ${area[1]}+0.0001 `);
-        } else if (v.type == 'amount') {
-            let amount = v.value.split(' ~ ');
-            amount = amount.map(v => v.replace(/,/g, ""));
-            sqlAmount.push(` amount BETWEEN '${amount[0]}' AND '${amount[1]}' `);
-        }
-    });
-    if (sqlVName.length) sqlWhere += `AND (${sqlVName.join('OR')}) `;
-    if (sqlApt.length) sqlWhere += `AND (${sqlApt.join('OR')}) `;
-    if (sqlArea.length) sqlWhere += `AND (${sqlArea.join('OR')}) `;
-    if (sqlAmount.length) sqlWhere += `AND (${sqlAmount.join('OR')}) `;
-    // sqlWhere += `ORDER BY ct.dn_cd, ct.cntr_date, ct.area DESC
-    // LIMIT ${(Number(pageNo) - 1) * Number(numOfRows)}, ${numOfRows}`;
+        let sqlSelect = `SELECT
+            FORMAT(ct.amount, 0) AS amount,
+            CONCAT(ct.cnst_year) AS cnst_year,
+            ct.cntr_date, ct.apt, ct.floor,
+            CONCAT(ct.area) AS area,
+            '${LAWD_CDList[LAWD_CD]}' as region_nm,
+            CONCAT(ct.region_cd) AS region_cd,
+            rn.road_nm, CONCAT(ct.rn_cd) AS rn_cd,
+            ct.rn_sn_cd, ct.rn_bldg_mc, ct.rn_bldg_sc,
+            dn.dong_nm, CONCAT(ct.dn_cd) AS dn_cd,
+            ct.dn_mc, ct.dn_sc, ct.dn_ln_cd, ct.ln `;
 
-    let sql = sqlSelect + sqlFrom + sqlWhere;
-    // clog(sql);
-    let result = await sqlExecute(sql, [], 'cntr');
-    let { totalCount } = result[0][0];
-    clog('totalCount', totalCount);
+        let sqlFrom = `FROM contracts${LAWD_CD} as ct
+            INNER JOIN dong_names as dn
+            ON ct.region_cd = dn.region_cd
+            AND ct.dn_cd = dn.dn_cd
+            LEFT OUTER JOIN road_names as rn
+            ON ct.region_cd = rn.region_cd
+            AND ct.rn_cd = rn.rn_cd `;
 
-    // INNER JOIN road_names as rn : 483
-    // LEFT OUTER JOIN road_names as rn : 487
-    // let sql = `SELECT * FROM contracts${LAWD_CD} ORDER BY dn_cd`; // DESC
-    // DATE_FORMAT(ct.cntr_date, '%Y') AS cntr_year,
-    // DATE_FORMAT(ct.cntr_date, '%c') AS cntr_month,
-    // DATE_FORMAT(ct.cntr_date, '%e') AS cntr_day,
-    sqlSelect = `SELECT
-        FORMAT(ct.amount, 0) AS amount,
-        CONCAT(ct.cnst_year) AS cnst_year,
-        ct.cntr_date, ct.apt, ct.floor,
-        CONCAT(ct.area) AS area,
-        '${LAWD_CDList[LAWD_CD]}' as region_nm,
-        CONCAT(ct.region_cd) AS region_cd,
-        rn.road_nm, CONCAT(ct.rn_cd) AS rn_cd,
-        ct.rn_sn_cd, ct.rn_bldg_mc, ct.rn_bldg_sc,
-        dn.dong_nm, CONCAT(ct.dn_cd) AS dn_cd,
-        ct.dn_mc, ct.dn_sc, ct.dn_ln_cd, ct.ln `;
+        let sqlWhere = `WHERE cntr_date BETWEEN '${DEALYMD1}' AND '${DEALYMD2}' `;
 
-    sqlWhere += `ORDER BY ct.dn_cd, ct.cntr_date, ct.area DESC
+        let sqlVName = [];
+        let sqlApt = [];
+        let sqlArea = [];
+        let sqlAmount = [];
+        filters.forEach((v, i) => {
+            if (v.type == 'v-name') {
+                sqlVName.push(` dong_nm like '%${v.value}%' `);
+                sqlVName.push(` road_nm like '%${v.value}%' `);
+            } else if (v.type == 'apt') {
+                sqlApt.push(` apt like '%${v.value}%' `);
+            } else if (v.type == 'area') {
+                let area = v.value.split(' ~ ');
+                sqlArea.push(` area BETWEEN ${area[0]}-0.0001 AND ${area[1]}+0.0001 `);
+            } else if (v.type == 'amount') {
+                let amount = v.value.split(' ~ ');
+                amount = amount.map(v => v.replace(/,/g, ""));
+                sqlAmount.push(` amount BETWEEN '${amount[0]}' AND '${amount[1]}' `);
+            }
+        });
+        if (sqlVName.length) sqlWhere += `AND (${sqlVName.join('OR')}) `;
+        if (sqlApt.length) sqlWhere += `AND (${sqlApt.join('OR')}) `;
+        if (sqlArea.length) sqlWhere += `AND (${sqlArea.join('OR')}) `;
+        if (sqlAmount.length) sqlWhere += `AND (${sqlAmount.join('OR')}) `;
+        // sqlWhere += `ORDER BY ct.dn_cd, ct.cntr_date, ct.area DESC
+        // LIMIT ${(Number(pageNo) - 1) * Number(numOfRows)}, ${numOfRows}`;
+
+        sqlWhere += `ORDER BY ct.cntr_date DESC, ct.dn_cd, ct.area DESC `;
+
+        let sql = sqlSelect + sqlFrom + sqlWhere;
+        let result = await sqlExecute(sql, [], 'cntr');
+        let items = result[0];
+        body = { numOfRows, pageNo, totalCount: items.length, items: { item: [] } };
+
+        let keys = Object.keys(d2oKeys);
+        let values = Object.values(d2oKeys);
+        items.forEach(item => {
+            let newItem = {};
+            for (let i in keys) newItem[values[i]] = item[keys[i]];
+            body.items.item.push(newItem);
+        });
+
+    } else {
+
+        // get totalCount
+        // ${DEAL_YMD.slice(0, -2)}-${DEAL_YMD.slice(-2)}-01
+        let sqlSelect = `SELECT COUNT(*) as totalCount `;
+        let sqlFrom = `FROM contracts${LAWD_CD} as ct
+            INNER JOIN dong_names as dn
+            ON ct.region_cd = dn.region_cd
+            AND ct.dn_cd = dn.dn_cd
+            LEFT OUTER JOIN road_names as rn
+            ON ct.region_cd = rn.region_cd
+            AND ct.rn_cd = rn.rn_cd `;
+        let sqlWhere = `WHERE cntr_date BETWEEN '${DEALYMD1}' AND '${DEALYMD2}' `;
+
+        let sqlVName = [];
+        let sqlApt = [];
+        let sqlArea = [];
+        let sqlAmount = [];
+        filters.forEach((v, i) => {
+            if (v.type == 'v-name') {
+                sqlVName.push(` dong_nm like '%${v.value}%' `);
+                sqlVName.push(` road_nm like '%${v.value}%' `);
+            } else if (v.type == 'apt') {
+                sqlApt.push(` apt like '%${v.value}%' `);
+            } else if (v.type == 'area') {
+                let area = v.value.split(' ~ ');
+                sqlArea.push(` area BETWEEN ${area[0]}-0.0001 AND ${area[1]}+0.0001 `);
+            } else if (v.type == 'amount') {
+                let amount = v.value.split(' ~ ');
+                amount = amount.map(v => v.replace(/,/g, ""));
+                sqlAmount.push(` amount BETWEEN '${amount[0]}' AND '${amount[1]}' `);
+            }
+        });
+        if (sqlVName.length) sqlWhere += `AND (${sqlVName.join('OR')}) `;
+        if (sqlApt.length) sqlWhere += `AND (${sqlApt.join('OR')}) `;
+        if (sqlArea.length) sqlWhere += `AND (${sqlArea.join('OR')}) `;
+        if (sqlAmount.length) sqlWhere += `AND (${sqlAmount.join('OR')}) `;
+        // sqlWhere += `ORDER BY ct.dn_cd, ct.cntr_date, ct.area DESC
+        // LIMIT ${(Number(pageNo) - 1) * Number(numOfRows)}, ${numOfRows}`;
+
+        let sql = sqlSelect + sqlFrom + sqlWhere;
+        // clog(sql);
+        let result = await sqlExecute(sql, [], 'cntr');
+        let { totalCount } = result[0][0];
+        clog('totalCount', totalCount);
+
+        // INNER JOIN road_names as rn : 483
+        // LEFT OUTER JOIN road_names as rn : 487
+        // let sql = `SELECT * FROM contracts${LAWD_CD} ORDER BY dn_cd`; // DESC
+        // DATE_FORMAT(ct.cntr_date, '%Y') AS cntr_year,
+        // DATE_FORMAT(ct.cntr_date, '%c') AS cntr_month,
+        // DATE_FORMAT(ct.cntr_date, '%e') AS cntr_day,
+        sqlSelect = `SELECT
+            FORMAT(ct.amount, 0) AS amount,
+            CONCAT(ct.cnst_year) AS cnst_year,
+            ct.cntr_date, ct.apt, ct.floor,
+            CONCAT(ct.area) AS area,
+            '${LAWD_CDList[LAWD_CD]}' as region_nm,
+            CONCAT(ct.region_cd) AS region_cd,
+            rn.road_nm, CONCAT(ct.rn_cd) AS rn_cd,
+            ct.rn_sn_cd, ct.rn_bldg_mc, ct.rn_bldg_sc,
+            dn.dong_nm, CONCAT(ct.dn_cd) AS dn_cd,
+            ct.dn_mc, ct.dn_sc, ct.dn_ln_cd, ct.ln `;
+
+        sqlWhere += `ORDER BY ct.dn_cd, ct.cntr_date, ct.area DESC
         LIMIT ${(Number(pageNo) - 1) * Number(numOfRows)}, ${numOfRows}`;
 
-    sql = sqlSelect + sqlFrom + sqlWhere;
-    // clog(sql);
-    result = await sqlExecute(sql, [], 'cntr');
-    let items = result[0];
-    clog(items.length);
-    let body = { numOfRows, pageNo, totalCount, items: { item: [] } };
+        sql = sqlSelect + sqlFrom + sqlWhere;
+        // clog(sql);
+        result = await sqlExecute(sql, [], 'cntr');
+        let items = result[0];
+        clog(items.length);
+        body = { numOfRows, pageNo, totalCount, items: { item: [] } };
 
-    let keys = Object.keys(d2oKeys);
-    let values = Object.values(d2oKeys);
-    items.forEach(item => {
-        let newItem = {};
-        for (let i in keys) newItem[values[i]] = item[keys[i]];
-        body.items.item.push(newItem);
-    });
-
+        let keys = Object.keys(d2oKeys);
+        let values = Object.values(d2oKeys);
+        items.forEach(item => {
+            let newItem = {};
+            for (let i in keys) newItem[values[i]] = item[keys[i]];
+            body.items.item.push(newItem);
+        });
+    }
     return body;
 }
 

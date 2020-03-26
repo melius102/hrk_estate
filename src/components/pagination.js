@@ -34,18 +34,22 @@ export default class Pagination extends React.Component {
         let { LAWD_CD, DEALYMD1, DEALYMD2, pageNo, numOfRows } = this.props;
         let newPageNo = Number(pageNo) + dpage;
         if (newPageNo < 1 || newPageNo > this.state.totalPage) return;
-        fetch(`/redata/data/${LAWD_CD}/${DEALYMD1}/${DEALYMD2}/${newPageNo}/${numOfRows}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ filters: this.props.filters })
-        }).then((response) => {
-            // clog(response); // header
-            return response.json();
-        }).then((jsonBody) => {
-            // let jsonBody = JSON.parse(data);
-            this.props.dpUpdateItemList(jsonBody);
-            this.setState({ pageNoDisplay: "block" });
-        });
+
+        this.props.dpPageChange(newPageNo); // pageNo 
+        this.setState({ pageNoDisplay: "block" });
+
+        // fetch(`/redata/data/${LAWD_CD}/${DEALYMD1}/${DEALYMD2}/${newPageNo}/${numOfRows}`, {
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify({ filters: this.props.filters })
+        // }).then((response) => {
+        //     // clog(response); // header
+        //     return response.json();
+        // }).then((jsonBody) => {
+        //     // let jsonBody = JSON.parse(data);
+        //     this.props.dpUpdateItemList(jsonBody);
+        //     this.setState({ pageNoDisplay: "block" });
+        // });
         // this.props.dpPageChange(pageNo); // pageNo 
     }
 

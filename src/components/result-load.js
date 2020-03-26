@@ -34,8 +34,8 @@ export default class ResultLoad extends React.Component {
         allItemHide();
         if (!this.props.LAWD_CD || !this.props.DEALYMD1 || !this.props.DEALYMD2) return;
         let { LAWD_CD, DEALYMD1, DEALYMD2, numOfRows } = this.props;
-        let pageNo = 1;
-        fetch(`/redata/data/${LAWD_CD}/${DEALYMD1}/${DEALYMD2}/${pageNo}/${numOfRows}`, {
+        // fetch(`/redata/data/${LAWD_CD}/${DEALYMD1}/${DEALYMD2}/${pageNo}/${numOfRows}`, {})
+        fetch(`/redata/data/${LAWD_CD}/${DEALYMD1}/${DEALYMD2}/1/all`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ filters: this.props.filters })

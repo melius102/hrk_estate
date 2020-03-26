@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 
 const mapStateToProps = (state) => ({
     itemListData: state.itemListData,
+    pageNo: state.pageNo,
+    numOfRows: state.numOfRows,
     readyFetch: state.readyFetch
 });
 

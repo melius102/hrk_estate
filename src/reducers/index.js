@@ -17,7 +17,7 @@ const initialState = {
 
     // result load
     pageNo: 1,
-    numOfRows: 20,
+    numOfRows: 10,
     totalCount: 1,
     readyFetch: 0,
 
