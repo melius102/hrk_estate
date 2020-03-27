@@ -18,7 +18,7 @@ const initialState = {
     // result load
     pageNo: 1,
     numOfRows: 10,
-    totalCount: 1,
+    totalCount: 0,
     readyFetch: 0,
 
     // map
@@ -164,6 +164,7 @@ function regionSelector(state = initialState, action) {
     } else {
         newState.readyFetch = 0;
         newState.filters = [];
+        newState.totalCount = 0;
     }
     return newState;
 }

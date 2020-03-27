@@ -126,7 +126,7 @@ footer {
 
 #item-list {
     max-width: 700px;
-    min-height: 100px;
+    min-height: 20px;
     margin: 0 auto;
     @extend .rdev;
 
@@ -202,40 +202,64 @@ footer {
     }
 }
 
-
-#pagination {
+#middle-ctrl {
     $p-height: 80px;
     $p-font-size: 20px;
-    text-align: center;
+
+    max-width: 700px;
+    margin: 0 auto;
+    height: $p-height;
+    position: relative;
     @extend .rdev;
 
-    div {
-        height: $p-height;
-        display: inline-block;
-        font-size: $p-font-size;
-        line-height: $p-height;
-        user-select: none;
+    #pagination {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        // text-align: center;
         @extend .rdev;
 
-        i {
-            width: 60px;
-            font-size: $p-font-size + 20px;
-            line-height: $p-height;
-            vertical-align: top;
-            text-align: center;
-            color: $main-color;
-            @extend .rdev;
-        }
-
-        i.end {
-            color: transparentize($main-color, 0.5);
-            @extend .rdev;
-        }
-
-        span {
+        div {
+            height: $p-height;
+            display: inline-block;
             font-size: $p-font-size;
+            line-height: $p-height;
+            user-select: none;
             @extend .rdev;
+
+            i {
+                width: 60px;
+                font-size: $p-font-size + 20px;
+                line-height: $p-height;
+                vertical-align: top;
+                text-align: center;
+                color: $main-color;
+                @extend .rdev;
+            }
+
+            i.end {
+                color: transparentize($main-color, 0.5);
+                @extend .rdev;
+            }
+
+            span {
+                font-size: $p-font-size;
+                @extend .rdev;
+            }
         }
+    }
+
+    #plot-show-btn {
+        width: 60px;
+        font-size: $p-font-size + 10px;
+        line-height: $p-height;
+        // vertical-align: top;
+        text-align: center;
+        color: $main-color;
+
+        position: absolute;
+        right: 0;
+        @extend .rdev;
     }
 }
 

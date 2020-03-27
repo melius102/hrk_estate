@@ -11,6 +11,7 @@ import FilterContainer from './filter-container';
 import ResPlotContainer from './res-plot-container';
 import ItemListContainer from './item-list-container';
 import PaginationContainer from './pagination-container';
+import PlotShowBtnContainer from './plot-show-btn-container';
 import { clog } from '../lib/util';
 
 export default class App extends React.Component {
@@ -26,7 +27,10 @@ export default class App extends React.Component {
                 <ResultLoadContainer />
                 <FilterContainer />
                 <ResPlotContainer />
-                <PaginationContainer />
+                <div id='middle-ctrl'>
+                    <PaginationContainer />
+                    <PlotShowBtnContainer />
+                </div>
                 <ItemListContainer />
                 <footer><p>{footerText}</p></footer>
             </React.Fragment>
